@@ -168,17 +168,27 @@ struct CameraPreview: NSViewRepresentable {
     func makeNSView(context: Context) -> NSView {
         let v = NSView()
         v.wantsLayer = true
-        let preview = AVCaptureVideoPreviewLayer(session: session!)
-        preview.videoGravity = .resizeAspectFill
-        preview.frame = v.bounds
-        preview.autoresizingMask = [.layerWidthSizable, .layerHeightSizable]
-        v.layer?.addSublayer(preview)
+        v.layer?.backgroundColor = NSColor.black.cgColor
+        if let s = session, s.isRunning {
+            let preview = AVCaptureVideoPreviewLayer(session: s)
+            preview.videoGravity = .resizeAspectFill
+            preview.frame = v.bounds
+            preview.autoresizingMask = [.layerWidthSizable, .layerHeightSizable]
+            v.layer?.addSublayer(preview)
+        }
         return v
     }
     
     func updateNSView(_ nsView: NSView, context: Context) {
-        if let layer = nsView.layer?.sublayers?.first as? AVCaptureVideoPreviewLayer {
-            layer.frame = nsView.bounds
+        guard let s = session, s.isRunning else { return }
+        if let preview = nsView.layer?.sublayers?.first as? AVCaptureVideoPreviewLayer {
+            preview.frame = nsView.bounds
+        } else {
+            let preview = AVCaptureVideoPreviewLayer(session: s)
+            preview.videoGravity = .resizeAspectFill
+            preview.frame = nsView.bounds
+            preview.autoresizingMask = [.layerWidthSizable, .layerHeightSizable]
+            nsView.layer?.addSublayer(preview)
         }
     }
 }
@@ -191,13 +201,15 @@ struct SelfieMirror: NSViewRepresentable {
         v.wantsLayer = true
         v.layer?.cornerRadius = 12
         v.layer?.masksToBounds = true
-        let preview = AVCaptureVideoPreviewLayer(session: session!)
-        preview.videoGravity = .resizeAspectFill
-        preview.frame = v.bounds
-        preview.autoresizingMask = [.layerWidthSizable, .layerHeightSizable]
-        // Mirror the selfie
-        preview.setAffineTransform(CGAffineTransform(scaleX: -1, y: 1))
-        v.layer?.addSublayer(preview)
+        v.layer?.backgroundColor = NSColor.black.cgColor
+        if let s = session, s.isRunning {
+            let preview = AVCaptureVideoPreviewLayer(session: s)
+            preview.videoGravity = .resizeAspectFill
+            preview.frame = v.bounds
+            preview.autoresizingMask = [.layerWidthSizable, .layerHeightSizable]
+            preview.setAffineTransform(CGAffineTransform(scaleX: -1, y: 1))
+            v.layer?.addSublayer(preview)
+        }
         let l = NSTextField(labelWithString: "marley sees you")
         l.font = NSFont.monospacedSystemFont(ofSize: 5, weight: .regular)
         l.textColor = NSColor.systemGray.withAlphaComponent(0.5)
@@ -208,8 +220,16 @@ struct SelfieMirror: NSViewRepresentable {
     }
     
     func updateNSView(_ nsView: NSView, context: Context) {
-        if let layer = nsView.layer?.sublayers?.first as? AVCaptureVideoPreviewLayer {
-            layer.frame = nsView.bounds
+        guard let s = session, s.isRunning else { return }
+        if let preview = nsView.layer?.sublayers?.first as? AVCaptureVideoPreviewLayer {
+            preview.frame = nsView.bounds
+        } else {
+            let preview = AVCaptureVideoPreviewLayer(session: s)
+            preview.videoGravity = .resizeAspectFill
+            preview.frame = nsView.bounds
+            preview.autoresizingMask = [.layerWidthSizable, .layerHeightSizable]
+            preview.setAffineTransform(CGAffineTransform(scaleX: -1, y: 1))
+            nsView.layer?.addSublayer(preview)
         }
     }
 }
