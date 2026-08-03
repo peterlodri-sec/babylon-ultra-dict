@@ -105,8 +105,11 @@ struct MarleyView: View {
                 }
                 
                 let combinedSeed = dynamicSeed.seed + dogEyeSeed
-                let rawInput = translator.detectedSound + translator.translation
-                let translation = makeQuantTranslation(from: rawInput, seed: combinedSeed)
+                let translation = makeQuantTranslation(
+                    sound: translator.detectedSound,
+                    meaning: translator.translation,
+                    seed: combinedSeed
+                )
                 translator.translation = translation
                 showTranslation = true
                 
@@ -120,25 +123,32 @@ struct MarleyView: View {
     }
     
     // Quant transformation: raw sound + seed → baby-babble dog speech
-    func makeQuantTranslation(from raw: String, seed: String) -> String {
-        var prng = Xoshiro128StarStar(seedString: seed + raw)
-        let words = raw.components(separatedBy: .whitespacesAndNewlines)
-            .filter { !$0.isEmpty }
+    func makeQuantTranslation(sound: String, meaning: String, seed: String) -> String {
+        var prng = Xoshiro128StarStar(seedString: seed + sound + meaning)
         
-        let babble = ["gaga", "goo", "wah", "brrr", "mmm", "baba", "mama", "ooo", "grrr", "awoo", "nnng", "gah"]
+        let words = meaning.components(separatedBy: CharacterSet.whitespacesAndNewlines.union(.punctuationCharacters))
+            .filter { !$0.isEmpty && $0.count > 1 }
+        
+        let sl = sound.lowercased()
+        let soundBabble: [String]
+        if sl.contains("woof") || sl.contains("bark") { soundBabble = ["brrr", "grrr", "woof", "awoo"] }
+        else if sl.contains("whine") || sl.contains("hungry") { soundBabble = ["nnng", "wah", "mmm", "baba"] }
+        else if sl.contains("growl") || sl.contains("alert") { soundBabble = ["grrr", "gah", "gaga", "brrr"] }
+        else if sl.contains("happy") { soundBabble = ["baba", "goo", "ooo", "mama"] }
+        else { soundBabble = ["gaga", "goo", "wah", "brrr", "mmm", "baba", "mama", "ooo", "grrr", "awoo", "nnng", "gah"] }
+        
         let feelings = ["safe", "watch", "quiet", "sleep", "guard", "love", "happy", "alert", "play", "home", "stay", "protect", "food", "warm"]
         
-        let selectedBabble = babble[Int(prng.next() * Float(babble.count)) % babble.count]
-        let selectedFeeling = feelings[Int(prng.next() * Float(feelings.count)) % feelings.count]
+        let b1 = soundBabble[Int(prng.next() * Float(soundBabble.count)) % soundBabble.count]
+        let feeling = feelings[Int(prng.next() * Float(feelings.count)) % feelings.count]
         
-        let snippets: [String] = words.enumerated().compactMap { i, word in
+        let fragments = words.enumerated().compactMap { i, word -> String? in
+            guard (i % 2) == 1, word.count >= 2 else { return nil }
             let hash = Float(abs(word.hashValue) % 100) / 100.0
-            let jitter = prng.next() * hash
-            return (i % 3) != 2 ? word.corruptedQuant(jitter: Int(jitter * 10)) : nil
+            return word.babyDrift(prng: &prng, hash: hash)
         }
-        
-        let prefix = snippets.joined(separator: "… ")
-        return "\(selectedBabble)… \(prefix) …\(selectedFeeling)."
+        let mid = fragments.isEmpty ? b1 : fragments.joined(separator: "… ")
+        return "\(b1)… \(mid) …\(feeling)."
     }
     
     // Random baby coo/babble before TTS
@@ -241,25 +251,37 @@ struct SelfieMirror: NSViewRepresentable {
     }
 }
 
-// Quant corruption: dog vocalization → baby babble phonetic drift
+// Quant baby drift: adult word → baby-talk phoneme cascade
 extension String {
-    func corruptedQuant(jitter: Int) -> String {
-        let chars = Array(self)
-        var result = ""
-        var skip = false
-        for (i, c) in chars.enumerated() {
-            if skip { skip = false; continue }
-            let drift = (i + jitter) % 7
-            switch drift {
-            case 0 where c.isLetter: result.append("b"); skip = true
-            case 1 where c.isLetter: result.append(Character(c.lowercased())); skip = false
-            case 2 where c.isLetter: result.append("r"); skip = true
-            case 3 where c.isLetter: result.append("g"); skip = false
-            case 4 where c.isLetter: result.append("w"); skip = true
-            case 5 where c.isLetter: result.append(Character(c.lowercased())); result.append(Character(c.lowercased()))
-            default: result.append(Character(c.lowercased()))
+    func babyDrift(prng: inout Xoshiro128StarStar, hash: Float) -> String {
+        let lower = self.lowercased()
+        let vowels: Set<Character> = ["a", "e", "i", "o", "u"]
+        let babyMap: [Character: String] = [
+            "r": "w", "l": "y", "s": "sh", "t": "tch", "k": "k", "p": "b",
+            "b": "b", "v": "b", "f": "ff", "c": "k", "g": "g", "d": "d",
+            "m": "m", "n": "n", "h": "h", "w": "w", "j": "y", "z": "z",
+        ]
+        var out = ""
+        var lastChar: Character = "\0"
+        var jit = prng.next()
+        for c in lower {
+            let drift = Int((jit * hash * 7).truncatingRemainder(dividingBy: 3))
+            jit = prng.next()
+            guard out.count < 8 else { break }
+            if vowels.contains(c) {
+                if drift == 0 && lastChar != c { out.append(c); out.append(c) }
+                else if lastChar != c { out.append(c) }
+                lastChar = c
+            } else if let baby = babyMap[c] {
+                if drift == 2 { continue }
+                if out.hasSuffix(baby) { continue }
+                out += baby
+                lastChar = c
+            } else {
+                out.append(c)
+                lastChar = c
             }
         }
-        return result.isEmpty ? "mmm" : result
+        return out.isEmpty ? "mm" : out
     }
 }
