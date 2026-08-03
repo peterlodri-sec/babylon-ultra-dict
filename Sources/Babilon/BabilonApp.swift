@@ -1,7 +1,9 @@
 import SwiftUI
+import AVFoundation
 
 @main
 struct BabilonApp: App {
+    static let speech = AVSpeechSynthesizer()
     @State private var translator = MarleyTranslator()
     
     var body: some Scene {

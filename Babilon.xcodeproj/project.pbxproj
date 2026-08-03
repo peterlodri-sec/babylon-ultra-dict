@@ -10,10 +10,12 @@
 		3CF2036161E11D1A18290B50 /* MarleyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE3D79039325FA6CC13D382D /* MarleyView.swift */; };
 		6FE3F6F29194E4FFC60D0AB0 /* QuantVoiceGen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F08DCF684B3CF6C5213176B0 /* QuantVoiceGen.swift */; };
 		9663F07B2AFA6BD93A40480D /* BabilonApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE356262212FCF5C9B214515 /* BabilonApp.swift */; };
+		D6F3C283BD94BFF70396BBCE /* DynamicSeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DCA54B3CE2A8C0ECFD03753 /* DynamicSeed.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		2C96C9D42D3D346AFEEC5B83 /* Babilon.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Babilon.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3DCA54B3CE2A8C0ECFD03753 /* DynamicSeed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicSeed.swift; sourceTree = "<group>"; };
 		EE356262212FCF5C9B214515 /* BabilonApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BabilonApp.swift; sourceTree = "<group>"; };
 		F08DCF684B3CF6C5213176B0 /* QuantVoiceGen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuantVoiceGen.swift; sourceTree = "<group>"; };
 		FE3D79039325FA6CC13D382D /* MarleyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarleyView.swift; sourceTree = "<group>"; };
@@ -34,6 +36,7 @@
 		89DDC11F8DFF3159702FA4DA /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				3DCA54B3CE2A8C0ECFD03753 /* DynamicSeed.swift */,
 				F08DCF684B3CF6C5213176B0 /* QuantVoiceGen.swift */,
 			);
 			path = Services;
@@ -114,6 +117,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9663F07B2AFA6BD93A40480D /* BabilonApp.swift in Sources */,
+				D6F3C283BD94BFF70396BBCE /* DynamicSeed.swift in Sources */,
 				3CF2036161E11D1A18290B50 /* MarleyView.swift in Sources */,
 				6FE3F6F29194E4FFC60D0AB0 /* QuantVoiceGen.swift in Sources */,
 			);

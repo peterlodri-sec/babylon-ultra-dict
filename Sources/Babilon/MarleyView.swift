@@ -9,7 +9,7 @@ struct MarleyView: View {
     @State private var thinkingTimer: Task<Void, Never>?
     @State private var dogDetected: Bool = false
     @State private var dogConfidence: Float = 0.0
-    private let speechSynth = AVSpeechSynthesizer()
+    @State private var dynamicSeed = DynamicSeed()
     
     var body: some View {
         ZStack {
@@ -110,48 +110,67 @@ struct MarleyView: View {
                 }
                 .padding(.bottom, 20)
                 
-                // OM MANI PADME HUNG footer
-                Text("OM MANI PADME HUNG")
-                    .font(.system(size: 12, design: .monospaced))
-                    .foregroundStyle(.cyan.opacity(0.2))
-                    .padding(.bottom, 36)
+                // OM MANI PADME HUNG footer + dynamic seed
+                VStack(spacing: 2) {
+                    Text(dynamicSeed.seed)
+                        .font(.system(size: 7, design: .monospaced))
+                        .foregroundStyle(.cyan.opacity(0.4))
+                        .lineLimit(1)
+                    Text("🎵 \(dynamicSeed.track)")
+                        .font(.system(size: 6, design: .monospaced))
+                        .foregroundStyle(.cyan.opacity(0.2))
+                }
+                .padding(.bottom, 36)
             }
         }
         .onAppear {
             startCamera()
+            dynamicSeed.start()
             translator.isListening = true
             translator.startListening()
             startContinuousTranslation()
         }
     }
     
-    // Continuous live translation — always running
+    // Always streaming voice — Marley→human with 1-3s delay
     func startContinuousTranslation() {
         thinkingProgress = 0; showTranslation = false
         thinkingTimer?.cancel()
         thinkingTimer = Task { @MainActor in
             while translator.isListening {
-                try? await Task.sleep(nanoseconds: 42_000_000)
+                // Variable delay: 1-3 seconds between translations
+                let delay = UInt64((1_000_000_000...3_000_000_000).randomElement()!)
+                try? await Task.sleep(nanoseconds: delay)
                 guard translator.isListening else { break }
-                if thinkingProgress < 1.0 {
-                    thinkingProgress += 0.025
-                } else if !showTranslation {
-                    showTranslation = true
-                    speakTranslation(translator.translation)
-                    try? await Task.sleep(nanoseconds: 2_500_000_000)
-                    if translator.isListening { thinkingProgress = 0; showTranslation = false }
+                
+                // Quick think animation (0.5s)
+                thinkingProgress = 0
+                for _ in 0..<12 {
+                    try? await Task.sleep(nanoseconds: 42_000_000)
+                    thinkingProgress += 0.083
                 }
+                
+                // Speak translation
+                showTranslation = true
+                speakTranslation(translator.translation, seed: dynamicSeed.seed)
+                
+                // Hold display for 2s
+                try? await Task.sleep(nanoseconds: 2_000_000_000)
+                if translator.isListening { thinkingProgress = 0; showTranslation = false }
             }
         }
     }
     
-    func speakTranslation(_ text: String) {
+    func speakTranslation(_ text: String, seed: String = "OM MANI PADME HUNG") {
         guard !text.isEmpty else { return }
         let utterance = AVSpeechUtterance(string: text)
         utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
-        utterance.rate = 0.42
-        utterance.pitchMultiplier = 0.85; utterance.volume = 0.7
-        speechSynth.speak(utterance)
+        // Dynamic rate based on seed hash
+        let seedHash = abs(seed.hashValue % 100)
+        utterance.rate = 0.38 + Float(seedHash) / 500.0       // 0.38–0.58
+        utterance.pitchMultiplier = 0.8 + Float(seedHash) / 1000.0 // 0.8–1.0
+        utterance.volume = 0.8
+        BabilonApp.speech.speak(utterance)
     }
     
     func startCamera() {
