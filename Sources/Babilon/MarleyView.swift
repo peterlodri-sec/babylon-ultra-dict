@@ -9,6 +9,8 @@ struct MarleyView: View {
     @State private var thinkingTimer: Task<Void, Never>?
     @State private var dogDetected: Bool = false
     @State private var dogConfidence: Float = 0.0
+    @State private var dogEyeSeed: String = ""
+    @State private var eyeDetected: Bool = false
     @State private var dynamicSeed = DynamicSeed()
     
     var body: some View {
@@ -27,11 +29,17 @@ struct MarleyView: View {
                             .foregroundStyle(.white.opacity(0.7))
                             .shadow(color: .black.opacity(0.5), radius: 4)
                         if dogDetected {
-                            HStack(spacing: 4) {
-                                Circle().fill(Color.green).frame(width: 6, height: 6)
-                                Text("dog detected · \(Int(dogConfidence * 100))%")
+                            HStack(spacing: 6) {
+                                Circle().fill(Color.green).frame(width: 8, height: 8)
+                                Text("dog · \(Int(dogConfidence * 100))%")
                                     .font(.system(size: 16, design: .monospaced))
                                     .foregroundStyle(.green.opacity(0.7))
+                                if eyeDetected {
+                                    Circle().fill(Color.yellow).frame(width: 6, height: 6)
+                                    Text("eyes")
+                                        .font(.system(size: 14, design: .monospaced))
+                                        .foregroundStyle(.yellow.opacity(0.7))
+                                }
                             }
                         }
                     }
@@ -152,7 +160,7 @@ struct MarleyView: View {
                 
                 // Speak translation
                 showTranslation = true
-                speakTranslation(translator.translation, seed: dynamicSeed.seed)
+                speakTranslation(translator.translation, seed: dynamicSeed.seed + dogEyeSeed)
                 
                 // Hold display for 2s
                 try? await Task.sleep(nanoseconds: 2_000_000_000)
@@ -189,12 +197,21 @@ struct MarleyView: View {
         DispatchQueue.global(qos: .userInitiated).async { cs.startRunning() }
         session = captureSession
         
-        // Dog detection — periodic random confidence (ML model placeholder)
+        // Dog + eye detection — ML model placeholder
         Task { @MainActor in
             while true {
                 try? await Task.sleep(nanoseconds: 3_000_000_000)
                 dogConfidence = Float.random(in: 0.3...0.95)
                 dogDetected = dogConfidence > 0.5
+                eyeDetected = dogDetected && Float.random(in: 0...1) > 0.4
+                // Dog eye as seed modifier
+                if eyeDetected {
+                    let eyeX = Int.random(in: 0...255)
+                    let eyeY = Int.random(in: 0...255)
+                    dogEyeSeed = "_EYE_\(eyeX)x\(eyeY)"
+                } else {
+                    dogEyeSeed = ""
+                }
                 if dogDetected && !translator.isListening {
                     translator.isListening = true; translator.startListening()
                 }
