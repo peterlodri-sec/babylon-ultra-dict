@@ -15,22 +15,23 @@ struct MarleyView: View {
             CameraPreview(session: $session)
                 .ignoresSafeArea()
             
-            // Always-visible selfie mirror — top right, bigger
+            // Always-visible selfie mirror — top right, 256×256
             VStack {
                 HStack {
                     Spacer()
                     ZStack {
                         SelfieMirror(session: $session)
-                            .frame(width: 120, height: 180)
-                            .cornerRadius(16)
-                            .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.cyan.opacity(0.3), lineWidth: 1.5))
+                            .frame(width: 256, height: 256)
+                            .cornerRadius(20)
+                            .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.cyan.opacity(0.3), lineWidth: 1.5))
                             .shadow(color: .cyan.opacity(0.2), radius: 12)
                         VStack {
                             Spacer()
                             Text("KAMERA")
-                                .font(.system(size: 7, design: .monospaced))
-                                .foregroundStyle(.white.opacity(0.4))
-                                .padding(.bottom, 4)
+                                .font(.system(size: 11, design: .monospaced))
+                                .fontWeight(.bold)
+                                .foregroundStyle(.white.opacity(0.6))
+                                .padding(.bottom, 6)
                         }
                     }
                     .padding(.top, 48).padding(.trailing, 16)
@@ -38,14 +39,16 @@ struct MarleyView: View {
                 Spacer()
             }
             
-            // CUKI KUTYA label — bottom left
+            // CUKI KUTYA label — bottom left, visible
             VStack {
                 Spacer()
                 HStack {
                     Text("CUKI KUTYA")
-                        .font(.system(size: 10, design: .monospaced))
-                        .foregroundStyle(.white.opacity(0.5))
-                        .padding(.leading, 20).padding(.bottom, 120)
+                        .font(.system(size: 14, design: .monospaced))
+                        .fontWeight(.bold)
+                        .foregroundStyle(.white.opacity(0.7))
+                        .shadow(color: .black.opacity(0.5), radius: 4)
+                        .padding(.leading, 24).padding(.bottom, 140)
                     Spacer()
                 }
             }
