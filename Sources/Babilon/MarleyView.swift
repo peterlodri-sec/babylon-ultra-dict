@@ -105,7 +105,8 @@ struct MarleyView: View {
                 }
                 
                 let combinedSeed = dynamicSeed.seed + dogEyeSeed
-                let translation = makeDynamicTranslation(seed: combinedSeed)
+                let rawInput = translator.detectedSound + translator.translation
+                let translation = makeQuantTranslation(from: rawInput, seed: combinedSeed)
                 translator.translation = translation
                 showTranslation = true
                 
@@ -118,22 +119,26 @@ struct MarleyView: View {
         }
     }
     
-    // Dynamic dog→human translation from combined seed
-    func makeDynamicTranslation(seed: String) -> String {
-        let hash = abs(seed.hashValue)
-        let phrases = [
-            "Wah! gaga goo... I see you. Safe.",
-            "Bbbbrrrr... someone near. Watch.",
-            "Mmmmm ba... all quiet. Rest now.",
-            "Grrr-wah... check door. Now.",
-            "Ooooh... I love you. Stay.",
-            "Baba baba... food? Food now.",
-            "Mmmmmm... warm. Good. Sleep.",
-            "Woof-brrr... stranger. Alert.",
-            "Nnnnggg... belly rub. Please.",
-            "Awooo... sky calling. Listen.",
-        ]
-        return phrases[hash % phrases.count]
+    // Quant transformation: raw sound + seed → baby-babble dog speech
+    func makeQuantTranslation(from raw: String, seed: String) -> String {
+        var prng = Xoshiro128StarStar(seedString: seed + raw)
+        let words = raw.components(separatedBy: .whitespacesAndNewlines)
+            .filter { !$0.isEmpty }
+        
+        let babble = ["gaga", "goo", "wah", "brrr", "mmm", "baba", "mama", "ooo", "grrr", "awoo", "nnng", "gah"]
+        let feelings = ["safe", "watch", "quiet", "sleep", "guard", "love", "happy", "alert", "play", "home", "stay", "protect", "food", "warm"]
+        
+        let selectedBabble = babble[Int(prng.next() * Float(babble.count)) % babble.count]
+        let selectedFeeling = feelings[Int(prng.next() * Float(feelings.count)) % feelings.count]
+        
+        let snippets: [String] = words.enumerated().compactMap { i, word in
+            let hash = Float(abs(word.hashValue) % 100) / 100.0
+            let jitter = prng.next() * hash
+            return (i % 3) != 2 ? word.corruptedQuant(jitter: Int(jitter * 10)) : nil
+        }
+        
+        let prefix = snippets.joined(separator: "… ")
+        return "\(selectedBabble)… \(prefix) …\(selectedFeeling)."
     }
     
     // Random baby coo/babble before TTS
@@ -233,5 +238,28 @@ struct SelfieMirror: NSViewRepresentable {
             p.setAffineTransform(CGAffineTransform(scaleX: -1, y: 1))
             nsView.layer?.addSublayer(p)
         }
+    }
+}
+
+// Quant corruption: dog vocalization → baby babble phonetic drift
+extension String {
+    func corruptedQuant(jitter: Int) -> String {
+        let chars = Array(self)
+        var result = ""
+        var skip = false
+        for (i, c) in chars.enumerated() {
+            if skip { skip = false; continue }
+            let drift = (i + jitter) % 7
+            switch drift {
+            case 0 where c.isLetter: result.append("b"); skip = true
+            case 1 where c.isLetter: result.append(Character(c.lowercased())); skip = false
+            case 2 where c.isLetter: result.append("r"); skip = true
+            case 3 where c.isLetter: result.append("g"); skip = false
+            case 4 where c.isLetter: result.append("w"); skip = true
+            case 5 where c.isLetter: result.append(Character(c.lowercased())); result.append(Character(c.lowercased()))
+            default: result.append(Character(c.lowercased()))
+            }
+        }
+        return result.isEmpty ? "mmm" : result
     }
 }
