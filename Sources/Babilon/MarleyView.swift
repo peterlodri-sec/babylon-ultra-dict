@@ -23,14 +23,14 @@ struct MarleyView: View {
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("CUKI KUTYA")
-                            .font(.system(size: 14, design: .monospaced)).fontWeight(.bold)
+                            .font(.system(size: 28, design: .monospaced)).fontWeight(.bold)
                             .foregroundStyle(.white.opacity(0.7))
                             .shadow(color: .black.opacity(0.5), radius: 4)
                         if dogDetected {
                             HStack(spacing: 4) {
                                 Circle().fill(Color.green).frame(width: 6, height: 6)
                                 Text("dog detected · \(Int(dogConfidence * 100))%")
-                                    .font(.system(size: 8, design: .monospaced))
+                                    .font(.system(size: 16, design: .monospaced))
                                     .foregroundStyle(.green.opacity(0.7))
                             }
                         }
@@ -53,7 +53,7 @@ struct MarleyView: View {
                         VStack {
                             Spacer()
                             Text("KAMERA")
-                                .font(.system(size: 11, design: .monospaced)).fontWeight(.bold)
+                                .font(.system(size: 22, design: .monospaced)).fontWeight(.bold)
                                 .foregroundStyle(.white.opacity(0.6))
                                 .padding(.bottom, 6)
                         }
@@ -78,11 +78,11 @@ struct MarleyView: View {
                                 .stroke(thinkingProgress >= 1.0 ? Color.green : Color.cyan, style: StrokeStyle(lineWidth: 2, lineCap: .round))
                                 .frame(width: 36, height: 36).rotationEffect(.degrees(-90))
                                 .animation(.easeInOut(duration: 0.3), value: thinkingProgress)
-                            Text("ॐ").font(.system(size: 8, design: .serif))
+                            Text("ॐ").font(.system(size: 16, design: .serif))
                                 .foregroundStyle(thinkingProgress >= 1.0 ? Color.green.opacity(0.6) : Color.cyan.opacity(0.4))
                         }
                         Text("live translation")
-                            .font(.system(size: 8, design: .monospaced))
+                            .font(.system(size: 16, design: .monospaced))
                             .foregroundStyle(.cyan.opacity(0.5))
                     }
                     
@@ -90,15 +90,15 @@ struct MarleyView: View {
                     if showTranslation && !translator.translation.isEmpty {
                         VStack(spacing: 3) {
                             Text(translator.translation)
-                                .font(.system(size: 14))
+                                .font(.system(size: 28))
                                 .multilineTextAlignment(.center)
                                 .foregroundStyle(.white)
                             HStack(spacing: 4) {
                                 Text(translator.detectedSound)
-                                    .font(.system(size: 9, design: .monospaced))
+                                    .font(.system(size: 18, design: .monospaced))
                                     .foregroundStyle(.cyan)
                                 Image(systemName: "speaker.wave.2.fill")
-                                    .font(.system(size: 7))
+                                    .font(.system(size: 14))
                                     .foregroundStyle(.green.opacity(0.5))
                             }
                         }
@@ -112,7 +112,7 @@ struct MarleyView: View {
                 
                 // OM MANI PADME HUNG footer
                 Text("OM MANI PADME HUNG")
-                    .font(.system(size: 6, design: .monospaced))
+                    .font(.system(size: 12, design: .monospaced))
                     .foregroundStyle(.cyan.opacity(0.2))
                     .padding(.bottom, 36)
             }
