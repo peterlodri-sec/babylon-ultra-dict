@@ -1,13 +1,13 @@
 import SwiftUI
-import AVFoundation
+@preconcurrency import AVFoundation
 
 struct MarleyView: View {
     @Environment(MarleyTranslator.self) private var translator
     @State private var session: AVCaptureSession?
     @State private var thinkingProgress: Double = 0.0
     @State private var showTranslation: Bool = false
-    @State private var thinkingTimer: Timer?
-    @State private var speechSynth = AVSpeechSynthesizer()
+    @State private var thinkingTimer: Task<Void, Never>?
+    private let speechSynth = AVSpeechSynthesizer()
     
     var body: some View {
         ZStack {
@@ -89,7 +89,7 @@ struct MarleyView: View {
                 Button(action: {
                     translator.isListening.toggle()
                     if translator.isListening { translator.startListening(); startThinkingCycle() }
-                    else { translator.stopListening(); thinkingTimer?.invalidate(); showTranslation = false }
+                    else { translator.stopListening(); thinkingTimer?.cancel(); showTranslation = false }
                 }) {
                     ZStack {
                         Circle().fill(translator.isListening ? Color.red.opacity(0.7) : Color.cyan.opacity(0.7)).frame(width: 64, height: 64)
@@ -114,15 +114,17 @@ struct MarleyView: View {
     // Thinking → translate → speak → repeat
     func startThinkingCycle() {
         thinkingProgress = 0; showTranslation = false
-        thinkingTimer?.invalidate()
-        thinkingTimer = Timer.scheduledTimer(withTimeInterval: 0.042, repeats: true) { timer in
-            guard translator.isListening else { timer.invalidate(); return }
-            if thinkingProgress < 1.0 {
-                thinkingProgress += 0.025
-            } else if !showTranslation {
-                showTranslation = true
-                speakTranslation(translator.translation)   // PLAYBACK on default output
-                DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
+        thinkingTimer?.cancel()
+        thinkingTimer = Task { @MainActor in
+            while translator.isListening {
+                try? await Task.sleep(nanoseconds: 42_000_000) // 42ms tick
+                guard translator.isListening else { break }
+                if thinkingProgress < 1.0 {
+                    thinkingProgress += 0.025
+                } else if !showTranslation {
+                    showTranslation = true
+                    speakTranslation(translator.translation)
+                    try? await Task.sleep(nanoseconds: 3_500_000_000) // hold 3.5s
                     if translator.isListening { thinkingProgress = 0; showTranslation = false }
                 }
             }
@@ -154,7 +156,8 @@ struct MarleyView: View {
            captureSession.canAddInput(micInput) {
             captureSession.addInput(micInput)
         }
-        DispatchQueue.global(qos: .userInitiated).async { captureSession.startRunning() }
+        let cs = captureSession
+        DispatchQueue.global(qos: .userInitiated).async { cs.startRunning() }
         session = captureSession
     }
 }
