@@ -164,16 +164,52 @@ struct MarleyView: View {
 
 struct CameraPreview: NSViewRepresentable {
     @Binding var session: AVCaptureSession?
-    func makeNSView(context: Context) -> NSView { let v = NSView(); v.wantsLayer = true; v.layer?.backgroundColor = NSColor.black.cgColor; return v }
-    func updateNSView(_ nsView: NSView, context: Context) {}
+    
+    func makeNSView(context: Context) -> NSView {
+        let v = NSView()
+        v.wantsLayer = true
+        let preview = AVCaptureVideoPreviewLayer(session: session!)
+        preview.videoGravity = .resizeAspectFill
+        preview.frame = v.bounds
+        preview.autoresizingMask = [.layerWidthSizable, .layerHeightSizable]
+        v.layer?.addSublayer(preview)
+        return v
+    }
+    
+    func updateNSView(_ nsView: NSView, context: Context) {
+        if let layer = nsView.layer?.sublayers?.first as? AVCaptureVideoPreviewLayer {
+            layer.frame = nsView.bounds
+        }
+    }
 }
 
 struct SelfieMirror: NSViewRepresentable {
     @Binding var session: AVCaptureSession?
+    
     func makeNSView(context: Context) -> NSView {
-        let v = NSView(); v.wantsLayer = true; v.layer?.backgroundColor = NSColor.black.cgColor; v.layer?.cornerRadius = 12
-        let l = NSTextField(labelWithString: "marley sees you"); l.font = NSFont.monospacedSystemFont(ofSize: 5, weight: .regular); l.textColor = NSColor.systemGray; l.frame = NSRect(x: 4, y: 4, width: 72, height: 8)
-        v.addSubview(l); return v
+        let v = NSView()
+        v.wantsLayer = true
+        v.layer?.cornerRadius = 12
+        v.layer?.masksToBounds = true
+        let preview = AVCaptureVideoPreviewLayer(session: session!)
+        preview.videoGravity = .resizeAspectFill
+        preview.frame = v.bounds
+        preview.autoresizingMask = [.layerWidthSizable, .layerHeightSizable]
+        // Mirror the selfie
+        preview.setAffineTransform(CGAffineTransform(scaleX: -1, y: 1))
+        v.layer?.addSublayer(preview)
+        let l = NSTextField(labelWithString: "marley sees you")
+        l.font = NSFont.monospacedSystemFont(ofSize: 5, weight: .regular)
+        l.textColor = NSColor.systemGray.withAlphaComponent(0.5)
+        l.backgroundColor = .clear
+        l.frame = NSRect(x: 4, y: 4, width: 72, height: 8)
+        v.addSubview(l)
+        return v
     }
-    func updateNSView(_ nsView: NSView, context: Context) {}
+    
+    func updateNSView(_ nsView: NSView, context: Context) {
+        if let layer = nsView.layer?.sublayers?.first as? AVCaptureVideoPreviewLayer {
+            layer.frame = nsView.bounds
+        }
+    }
 }
