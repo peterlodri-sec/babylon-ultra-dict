@@ -73,7 +73,7 @@ struct SettingsView: View {
 struct QuickCaptureView: View {
     var body: some View {
         VStack {
-            Text("QuantTikTok")
+            Text("Babilon")
                 .font(.headline)
             Button("Quick Capture") {}
                 .buttonStyle(.borderedProminent)

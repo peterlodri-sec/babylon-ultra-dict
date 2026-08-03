@@ -1,4 +1,4 @@
-# QUANT-TIKTOK
+# BABILON
 
 📱 **Sovereign Video App** — iOS + macOS · On-Device · Zero Cloud
 
@@ -36,7 +36,7 @@ SwiftUI App
 │   └── LibraryView.swift     — Media library browser
 └── Resources/
     ├── Info.plist
-    └── QuantTikTok.entitlements
+    └── Babilon.entitlements
 ```
 
 ## Stack

@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct QuantTikTokApp: App {
+struct BabilonApp: App {
     @State private var appState = AppState()
     
     var body: some Scene {
@@ -11,7 +11,7 @@ struct QuantTikTokApp: App {
                 .frame(minWidth: 800, minHeight: 600)
         }
         #if os(macOS)
-        MenuBarExtra("QuantTikTok", systemImage: "camera.fill") {
+        MenuBarExtra("Babilon", systemImage: "camera.fill") {
             QuickCaptureView()
                 .environment(appState)
         }
