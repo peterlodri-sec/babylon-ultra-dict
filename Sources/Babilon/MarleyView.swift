@@ -129,25 +129,33 @@ struct MarleyView: View {
         let words = meaning.components(separatedBy: CharacterSet.whitespacesAndNewlines.union(.punctuationCharacters))
             .filter { !$0.isEmpty && $0.count > 1 }
         
+        // Sound-specific babble + multi-interjection
         let sl = sound.lowercased()
-        let soundBabble: [String]
-        if sl.contains("woof") || sl.contains("bark") { soundBabble = ["brrr", "grrr", "woof", "awoo"] }
-        else if sl.contains("whine") || sl.contains("hungry") { soundBabble = ["nnng", "wah", "mmm", "baba"] }
-        else if sl.contains("growl") || sl.contains("alert") { soundBabble = ["grrr", "gah", "gaga", "brrr"] }
-        else if sl.contains("happy") { soundBabble = ["baba", "goo", "ooo", "mama"] }
-        else { soundBabble = ["gaga", "goo", "wah", "brrr", "mmm", "baba", "mama", "ooo", "grrr", "awoo", "nnng", "gah"] }
+        let babblePool: [String]
+        if sl.contains("woof") { babblePool = ["brrr", "grrr", "woof", "awoo"] }
+        else if sl.contains("whine") { babblePool = ["nnng", "wah", "mmm", "baba"] }
+        else if sl.contains("growl") { babblePool = ["grrr", "gah", "gaga", "brrr"] }
+        else if sl.contains("breath") || sl.contains("calm") { babblePool = ["mmm", "ooo", "baba", "goo"] }
+        else { babblePool = ["gaga", "goo", "wah", "mmm", "baba"] }
         
-        let feelings = ["safe", "watch", "quiet", "sleep", "guard", "love", "happy", "alert", "play", "home", "stay", "protect", "food", "warm"]
+        // Dog feelings — more emotional range
+        let feelings = ["safe", "watch", "quiet", "sleep", "guard", "love", "happy", "alert", "play", "home", "stay", "protect", "food", "warm", "pack", "rest", "good", "now"]
         
-        let b1 = soundBabble[Int(prng.next() * Float(soundBabble.count)) % soundBabble.count]
+        let b1 = babblePool[Int(prng.next() * Float(babblePool.count)) % babblePool.count]
+        let b2 = babblePool[Int(prng.next() * Float(babblePool.count)) % babblePool.count]
         let feeling = feelings[Int(prng.next() * Float(feelings.count)) % feelings.count]
         
         let fragments = words.enumerated().compactMap { i, word -> String? in
-            guard (i % 2) == 1, word.count >= 2 else { return nil }
+            guard word.count >= 2 else { return nil }
             let hash = Float(abs(word.hashValue) % 100) / 100.0
-            return word.babyDrift(prng: &prng, hash: hash)
+            let drift = word.babyDrift(prng: &prng, hash: hash)
+            // Interleave mid-babble every ~3rd word
+            if (i % 3) == 2, let midBabble = babblePool.randomElement() {
+                return drift + "… " + midBabble
+            }
+            return drift
         }
-        let mid = fragments.isEmpty ? b1 : fragments.joined(separator: "… ")
+        let mid = fragments.isEmpty ? b2 : fragments.joined(separator: "… ")
         return "\(b1)… \(mid) …\(feeling)."
     }
     
