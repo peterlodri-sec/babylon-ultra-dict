@@ -15,18 +15,39 @@ struct MarleyView: View {
             CameraPreview(session: $session)
                 .ignoresSafeArea()
             
-            // Always-visible selfie mirror — top right
+            // Always-visible selfie mirror — top right, bigger
             VStack {
                 HStack {
                     Spacer()
-                    SelfieMirror(session: $session)
-                        .frame(width: 80, height: 120)
-                        .cornerRadius(12)
-                        .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.cyan.opacity(0.3), lineWidth: 1))
-                        .shadow(color: .cyan.opacity(0.15), radius: 8)
-                        .padding(.top, 48).padding(.trailing, 16)
+                    ZStack {
+                        SelfieMirror(session: $session)
+                            .frame(width: 120, height: 180)
+                            .cornerRadius(16)
+                            .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.cyan.opacity(0.3), lineWidth: 1.5))
+                            .shadow(color: .cyan.opacity(0.2), radius: 12)
+                        VStack {
+                            Spacer()
+                            Text("KAMERA")
+                                .font(.system(size: 7, design: .monospaced))
+                                .foregroundStyle(.white.opacity(0.4))
+                                .padding(.bottom, 4)
+                        }
+                    }
+                    .padding(.top, 48).padding(.trailing, 16)
                 }
                 Spacer()
+            }
+            
+            // CUKI KUTYA label — bottom left
+            VStack {
+                Spacer()
+                HStack {
+                    Text("CUKI KUTYA")
+                        .font(.system(size: 10, design: .monospaced))
+                        .foregroundStyle(.white.opacity(0.5))
+                        .padding(.leading, 20).padding(.bottom, 120)
+                    Spacer()
+                }
             }
             
             // MAIN UI
