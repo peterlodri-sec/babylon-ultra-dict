@@ -1,122 +1,66 @@
 import SwiftUI
-@preconcurrency import AVFoundation
+import AVFoundation
 
 struct MarleyView: View {
     @Environment(MarleyTranslator.self) private var translator
     @State private var session: AVCaptureSession?
-    @State private var thinkingProgress: Double = 0.0
+    @State private var thinkingProgress: Double = 0
     @State private var showTranslation: Bool = false
     @State private var thinkingTimer: Task<Void, Never>?
     @State private var dogDetected: Bool = false
     @State private var dogConfidence: Float = 0.0
-    @State private var dogEyeSeed: String = ""
     @State private var eyeDetected: Bool = false
+    @State private var dogEyeSeed: String = ""
     @State private var dynamicSeed = DynamicSeed()
     
+    // Marley's 16-dim ternarity matrix — OM MANI PADME HUNG
+    let marleyTernary: [Float] = [1, 0, -1, 1, 0, -1, 1, 0, -1, 1, 0, -1, 1, 0, -1, 1]
+
     var body: some View {
         ZStack {
-            // Live camera — always on
             CameraPreview(session: $session)
-                .ignoresSafeArea()
+            Rectangle().fill(.black.opacity(0.55))
+            SelfieMirror(session: $session)
             
-            // CUKI KUTYA label — bottom left
             VStack {
                 Spacer()
-                HStack {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("CUKI KUTYA")
-                            .font(.system(size: 28, design: .monospaced)).fontWeight(.bold)
-                            .foregroundStyle(.white.opacity(0.7))
-                            .shadow(color: .black.opacity(0.5), radius: 4)
-                        if dogDetected {
-                            HStack(spacing: 6) {
-                                Circle().fill(Color.green).frame(width: 8, height: 8)
-                                Text("dog · \(Int(dogConfidence * 100))%")
-                                    .font(.system(size: 16, design: .monospaced))
-                                    .foregroundStyle(.green.opacity(0.7))
-                                if eyeDetected {
-                                    Circle().fill(Color.yellow).frame(width: 6, height: 6)
-                                    Text("eyes")
-                                        .font(.system(size: 14, design: .monospaced))
-                                        .foregroundStyle(.yellow.opacity(0.7))
-                                }
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("CUKI KUTYA")
+                        .font(.system(size: 28, design: .monospaced)).fontWeight(.bold)
+                        .foregroundStyle(.white.opacity(0.7))
+                        .shadow(color: .black.opacity(0.5), radius: 4)
+                    if dogDetected {
+                        HStack(spacing: 6) {
+                            Circle().fill(Color.green).frame(width: 8, height: 8)
+                            Text("dog · \(Int(dogConfidence * 100))%")
+                                .font(.system(size: 16, design: .monospaced))
+                                .foregroundStyle(.green.opacity(0.7))
+                            if eyeDetected {
+                                Circle().fill(Color.yellow).frame(width: 6, height: 6)
+                                Text("eyes · \(dogEyeSeed.dropFirst(5))")
+                                    .font(.system(size: 14, design: .monospaced))
+                                    .foregroundStyle(.yellow.opacity(0.7))
                             }
                         }
                     }
-                    .padding(.leading, 24).padding(.bottom, 140)
-                    Spacer()
                 }
-            }
-            
-            // Selfie mirror — top right
-            VStack {
-                HStack {
-                    Spacer()
-                    ZStack {
-                        SelfieMirror(session: $session)
-                            .frame(width: 256, height: 256)
-                            .cornerRadius(20)
-                            .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.cyan.opacity(0.3), lineWidth: 1.5))
-                            .shadow(color: .cyan.opacity(0.2), radius: 12)
-                        VStack {
-                            Spacer()
-                            Text("KAMERA")
-                                .font(.system(size: 22, design: .monospaced)).fontWeight(.bold)
-                                .foregroundStyle(.white.opacity(0.6))
-                                .padding(.bottom, 6)
-                        }
-                    }
-                    .padding(.top, 48).padding(.trailing, 16)
-                }
-                Spacer()
-            }
-            
-            // Live translation overlay — always visible
-            VStack {
+                .padding(.leading, 24)
+                .frame(maxWidth: .infinity, alignment: .leading)
                 Spacer()
                 
-                // Thinking → Translation stream
-                VStack(spacing: 6) {
-                    // Thinking ring
-                    HStack(spacing: 8) {
-                        ZStack {
-                            Circle().stroke(Color.gray.opacity(0.15), lineWidth: 2).frame(width: 36, height: 36)
-                            Circle()
-                                .trim(from: 0, to: thinkingProgress)
-                                .stroke(thinkingProgress >= 1.0 ? Color.green : Color.cyan, style: StrokeStyle(lineWidth: 2, lineCap: .round))
-                                .frame(width: 36, height: 36).rotationEffect(.degrees(-90))
-                                .animation(.easeInOut(duration: 0.3), value: thinkingProgress)
-                            Text("ॐ").font(.system(size: 16, design: .serif))
-                                .foregroundStyle(thinkingProgress >= 1.0 ? Color.green.opacity(0.6) : Color.cyan.opacity(0.4))
-                        }
-                        Text("live translation")
-                            .font(.system(size: 16, design: .monospaced))
-                            .foregroundStyle(.cyan.opacity(0.5))
+                if showTranslation {
+                    VStack(spacing: 6) {
+                        Text(translator.translation)
+                            .font(.system(size: 18, design: .monospaced))
+                            .foregroundStyle(.white)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, 32)
+                            .padding(.vertical, 12)
+                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
                     }
-                    
-                    // Translation text
-                    if showTranslation && !translator.translation.isEmpty {
-                        VStack(spacing: 3) {
-                            Text(translator.translation)
-                                .font(.system(size: 28))
-                                .multilineTextAlignment(.center)
-                                .foregroundStyle(.white)
-                            HStack(spacing: 4) {
-                                Text(translator.detectedSound)
-                                    .font(.system(size: 18, design: .monospaced))
-                                    .foregroundStyle(.cyan)
-                                Image(systemName: "speaker.wave.2.fill")
-                                    .font(.system(size: 14))
-                                    .foregroundStyle(.green.opacity(0.5))
-                            }
-                        }
-                        .padding(.horizontal, 16).padding(.vertical, 10)
-                        .background(.ultraThinMaterial)
-                        .cornerRadius(16)
-                        .transition(.opacity.combined(with: .move(edge: .bottom)))
-                    }
+                    .transition(.opacity)
+                    .padding(.bottom, 20)
                 }
-                .padding(.bottom, 20)
                 
                 // OM MANI PADME HUNG footer + dynamic seed
                 VStack(spacing: 2) {
@@ -141,42 +85,76 @@ struct MarleyView: View {
     }
     
     // Always streaming voice — Marley→human with 1-3s delay
+    // Plays only when dog + eye detected above 51%
     func startContinuousTranslation() {
         thinkingProgress = 0; showTranslation = false
         thinkingTimer?.cancel()
         thinkingTimer = Task { @MainActor in
             while translator.isListening {
-                // Variable delay: 1-3 seconds between translations
                 let delay = UInt64((1_000_000_000...3_000_000_000).randomElement()!)
                 try? await Task.sleep(nanoseconds: delay)
                 guard translator.isListening else { break }
                 
-                // Quick think animation (0.5s)
+                // Gate: play only when dog + eye both above 51%
+                guard dogDetected && eyeDetected && dogConfidence > 0.51 else { continue }
+                
                 thinkingProgress = 0
                 for _ in 0..<12 {
                     try? await Task.sleep(nanoseconds: 42_000_000)
                     thinkingProgress += 0.083
                 }
                 
-                // Speak translation
+                let combinedSeed = dynamicSeed.seed + dogEyeSeed
+                let translation = makeDynamicTranslation(seed: combinedSeed)
+                translator.translation = translation
                 showTranslation = true
-                speakTranslation(translator.translation, seed: dynamicSeed.seed + dogEyeSeed)
                 
-                // Hold display for 2s
+                playBabySound()
+                speakTranslation(translation, seed: combinedSeed)
+                
                 try? await Task.sleep(nanoseconds: 2_000_000_000)
                 if translator.isListening { thinkingProgress = 0; showTranslation = false }
             }
         }
     }
     
+    // Dynamic dog→human translation from combined seed
+    func makeDynamicTranslation(seed: String) -> String {
+        let hash = abs(seed.hashValue)
+        let phrases = [
+            "Wah! gaga goo... I see you. Safe.",
+            "Bbbbrrrr... someone near. Watch.",
+            "Mmmmm ba... all quiet. Rest now.",
+            "Grrr-wah... check door. Now.",
+            "Ooooh... I love you. Stay.",
+            "Baba baba... food? Food now.",
+            "Mmmmmm... warm. Good. Sleep.",
+            "Woof-brrr... stranger. Alert.",
+            "Nnnnggg... belly rub. Please.",
+            "Awooo... sky calling. Listen.",
+        ]
+        return phrases[hash % phrases.count]
+    }
+    
+    // Random baby coo/babble before TTS
+    func playBabySound() {
+        let babble = ["goo", "gah", "baba", "mama", "brrr", "wah", "mmm", "ooo"]
+        let picked = babble.randomElement()!
+        let utterance = AVSpeechUtterance(string: picked)
+        utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
+        utterance.rate = 0.25
+        utterance.pitchMultiplier = 1.3
+        utterance.volume = 0.4
+        BabilonApp.speech.speak(utterance)
+    }
+    
     func speakTranslation(_ text: String, seed: String = "OM MANI PADME HUNG") {
         guard !text.isEmpty else { return }
         let utterance = AVSpeechUtterance(string: text)
         utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
-        // Dynamic rate based on seed hash
         let seedHash = abs(seed.hashValue % 100)
-        utterance.rate = 0.38 + Float(seedHash) / 500.0       // 0.38–0.58
-        utterance.pitchMultiplier = 0.8 + Float(seedHash) / 1000.0 // 0.8–1.0
+        utterance.rate = 0.38 + Float(seedHash) / 500.0
+        utterance.pitchMultiplier = 0.8 + Float(seedHash) / 1000.0
         utterance.volume = 0.8
         BabilonApp.speech.speak(utterance)
     }
@@ -204,7 +182,6 @@ struct MarleyView: View {
                 dogConfidence = Float.random(in: 0.3...0.95)
                 dogDetected = dogConfidence > 0.5
                 eyeDetected = dogDetected && Float.random(in: 0...1) > 0.4
-                // Dog eye as seed modifier
                 if eyeDetected {
                     let eyeX = Int.random(in: 0...255)
                     let eyeY = Int.random(in: 0...255)
