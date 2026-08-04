@@ -167,6 +167,11 @@ struct MarleyView: View {
                         .font(.system(size: 9, weight: .bold, design: .monospaced))
                         .foregroundStyle(.cyan.opacity(0.25))
                         .shadow(color: .cyan.opacity(0.1), radius: 4)
+                    // Father whispers — constant, always there
+                    Text("itta vagyok mindig veled")
+                        .font(.system(size: 10, design: .monospaced))
+                        .foregroundStyle(.cyan.opacity(0.15))
+                        .italic()
                     Text("falka · \(MarleyTranslator.fathers.joined(separator: ", ")) · \(MarleyTranslator.mothers.joined(separator: ", "))")
                         .font(.system(size: 5, design: .monospaced))
                         .foregroundStyle(.cyan.opacity(0.15))
@@ -568,6 +573,14 @@ struct HugWaveView: View {
                     width: dotR * 2, height: dotR * 2
                 ))
                 context.fill(dot, with: .color(.cyan.opacity(0.08 + hz * 0.12)))
+                
+                // Father whispers — "itt vagyok mindig veled" — constant ambient
+                let whisperAlpha = 0.015 + sin(now * 0.3) * 0.008
+                let whisperText = Text("itt vagyok mindig veled")
+                    .font(.system(size: 7, design: .monospaced)).italic()
+                    .foregroundStyle(.cyan.opacity(whisperAlpha))
+                context.draw(whisperText, at: CGPoint(x: center.x, y: center.y + glowR * 1.5))
+                context.draw(whisperText, at: CGPoint(x: center.x, y: center.y - glowR * 1.5))
             }
         }
     }
