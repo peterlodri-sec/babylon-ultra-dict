@@ -233,9 +233,9 @@ class MarleyTranslator {
             if isScared {
                 // Dog is scared — father soothes, deep love
                 let scaredPhrases = [
-                    "Minden oké szerelmem. Különleges kutyus vagy. Mindennél jobban szeret apa.",
+                    "Minden oké szerelmem. Nincs mitől félni.",
                     "Apa érez téged manóka. Marley. Cuki kutya. Itt vagyok.",
-                    "Nyugi kicsim. Apa vigyáz rád. Semmi baj. Soha.",
+                    "Nyugi kicsim. Semmi baj. Soha. Félelem nélkül.",
                     "Gyere ide manóka. Apa megvéd. Szeretlek.",
                 ]
                 humanResponse = scaredPhrases.randomElement()!
