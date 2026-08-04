@@ -86,6 +86,14 @@ struct MarleyView: View {
                                 .font(.system(size: 22, weight: .bold, design: .monospaced))
                                 .foregroundStyle(.green)
                                 .shadow(color: .black.opacity(0.7), radius: 3)
+                            if translator.detectedSound.contains("ITT VAGYOK") {
+                                Circle().fill(Color.cyan).frame(width: 10, height: 10)
+                                    .shadow(color: .cyan.opacity(0.8), radius: 6)
+                                Text("🗣️ ember · itt vagyok")
+                                    .font(.system(size: 18, weight: .heavy, design: .monospaced))
+                                    .foregroundStyle(.cyan)
+                                    .shadow(color: .cyan.opacity(0.4), radius: 4)
+                            }
                             if translator.detectedSound.contains("RIADÓ") {
                                 Circle().fill(Color.red).frame(width: 10, height: 10)
                                     .shadow(color: .red.opacity(0.8), radius: 6)
