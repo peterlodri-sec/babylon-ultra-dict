@@ -227,6 +227,7 @@ class MarleyTranslator {
                     "Pihenj. Vigyázok rád én is.",
                     "Szundi. Nyugodtan. Szeretlek.",
                     "Te tökéletes vagy úgy ahogy vagy manóka.",
+                    "Apa is téged. Mindennél jobban. Soha ne felejtsd.",
                 ]
                 humanResponse = humanPhrases.randomElement()!
             }

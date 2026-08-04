@@ -61,7 +61,7 @@ struct MarleyView: View {
                             Text("\(dog.breed) · \(dog.role)")
                                 .font(.system(size: 16, weight: .medium, design: .monospaced))
                                 .foregroundStyle(.cyan.opacity(0.5))
-                            Text("manóka · cuki kutya · apa szeret")
+                            Text("manóka · cuki kutya · apa is téged")
                                 .font(.system(size: 11, design: .monospaced))
                                 .foregroundStyle(.cyan.opacity(0.2))
                             // Signal chain
