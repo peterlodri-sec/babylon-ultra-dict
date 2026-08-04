@@ -208,6 +208,7 @@ class MarleyTranslator {
                     "Jó éjt. Itt vagyok. Aludj.",
                     "Pihenj. Vigyázok rád én is.",
                     "Szundi. Nyugodtan. Szeretlek.",
+                    "Te tökéletes vagy úgy ahogy vagy manóka.",
                 ]
                 humanResponse = humanPhrases.randomElement()!
             }
