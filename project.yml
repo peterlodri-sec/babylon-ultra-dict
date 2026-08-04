@@ -2,8 +2,8 @@ name: BABYLON-ultra-dict
 targets:
   BABYLON-ultra-dict:
     type: application
-    platform: iOS
-    deploymentTarget: "18.0"
+    platform: macOS
+    deploymentTarget: "15.0"
     sources:
       - Sources/Babilon
     settings:
@@ -11,8 +11,7 @@ targets:
       INFOPLIST_FILE: Resources/Info.plist
       DEVELOPMENT_TEAM: 7CFQYBX575
       SWIFT_VERSION: "6.0"
-      TARGETED_DEVICE_FAMILY: "1,2"
-      SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD: "YES"
+      MACOSX_DEPLOYMENT_TARGET: "15.0"
     entitlements:
       path: Resources/Babilon.entitlements
       properties:
