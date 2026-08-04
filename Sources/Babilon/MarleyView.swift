@@ -105,6 +105,12 @@ struct MarleyView: View {
                                     .foregroundStyle(.purple.opacity(0.7))
                                     .shadow(color: .purple.opacity(0.3), radius: 3)
                             }
+                            if translator.detectedSound.contains("Csendes") {
+                                Circle().fill(Color.white.opacity(0.5)).frame(width: 10, height: 10)
+                                Text("csend")
+                                    .font(.system(size: 14, weight: .semibold, design: .monospaced))
+                                    .foregroundStyle(.white.opacity(0.3))
+                            }
                             if translator.detectedSound.contains("RIADÓ") {
                                 Circle().fill(Color.red).frame(width: 10, height: 10)
                                     .shadow(color: .red.opacity(0.8), radius: 6)
@@ -254,6 +260,25 @@ struct MarleyView: View {
                 
                 // Gate: play only when dog + eye both above 51%
                 guard dogDetected && eyeDetected && dogConfidence > 0.51 else { continue }
+                
+                // Silence phase — csend, no TTS, just the wave
+                let isSilence = translator.detectedSound.contains("Csendes")
+                if isSilence {
+                    // Show translation without speaking
+                    let combinedSeed = dynamicSeed.seed + dogEyeSeed
+                    let dogName = authDog?.name ?? "Marley"
+                    let translation = makeQuantTranslation(
+                        sound: translator.detectedSound,
+                        meaning: translator.translation,
+                        seed: combinedSeed,
+                        dog: dogName
+                    )
+                    translator.translation = translation
+                    showTranslation = true
+                    try? await Task.sleep(nanoseconds: 4_000_000_000)
+                    if translator.isListening { thinkingProgress = 0; showTranslation = false }
+                    continue
+                }
                 
                 // Slower think animation when scared
                 thinkingProgress = 0
