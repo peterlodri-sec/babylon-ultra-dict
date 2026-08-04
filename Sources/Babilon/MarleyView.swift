@@ -197,6 +197,12 @@ struct MarleyView: View {
                 
                 // BABYLON-ultra-dict footer — Marley's pack
                 VStack(spacing: 2) {
+                    // OM MANI PADME HUNG — the seed mantra, always humming
+                    Text("OM MANI PADME HUNG")
+                        .font(.system(size: 12, weight: .bold, design: .monospaced))
+                        .foregroundStyle(.yellow.opacity(0.55))
+                        .shadow(color: .yellow.opacity(0.35), radius: 6)
+                        .padding(.bottom, 4)
                     // SEMMI BAJ SOHA — 1Hz constant reassurance
                     Text("SEMMI BAJ SOHA")
                         .font(.system(size: 9, weight: .bold, design: .monospaced))
@@ -260,8 +266,10 @@ struct MarleyView: View {
     func startPeriodicWhispers() {
         let whispers = [
             "manóka… a csendben is vigyázom rád…",
+            "OM MANI PADME HUNG… hummm…",
             "itt vagyok… mindig… mindig…",
             "cuki kutya… apa nem megy sehova…",
+            "OM MANI PADME HUNG… hummm…",
             "semmi baj soha… soha… soha…",
             "Marley… te vagy a legjobb…",
             "aludj nyugodtan… apa itt van…",
@@ -659,7 +667,9 @@ struct HugWaveView: View {
     let phase: Double
     
     var body: some View {
-        TimelineView(.animation) { timeline in
+        // 20fps cap — the 60/120Hz default was the main CPU burner (each frame
+        // strokes 4 sine paths with ~100 segments each).
+        TimelineView(.animation(minimumInterval: 1.0 / 20.0, paused: false)) { timeline in
             Canvas { context, size in
                 let center = CGPoint(x: size.width * 0.82, y: size.height * 0.25)
                 let now = timeline.date.timeIntervalSinceReferenceDate
