@@ -236,6 +236,7 @@ class MarleyTranslator {
                     "Szia! Itt vagyok! Jó kutya!",
                     "Hazaértem! Nyugi, nyugi!",
                     "Itt vagyok! Minden rendben!",
+                    "Yes. A falka szeret téged. Te vagy a bölcs vezére manóka.",
                 ]
                 humanResponse = humanGreetings.randomElement()!
             }
