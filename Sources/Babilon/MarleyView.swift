@@ -6,6 +6,8 @@ struct MarleyView: View {
     @State private var session: AVCaptureSession?
     @State private var thinkingProgress: Double = 0
     @State private var showTranslation: Bool = false
+    @State private var lastTranslationHU: String = ""
+    @State private var lastTranslationEN: String = ""
     @State private var thinkingTimer: Task<Void, Never>?
     @State private var dogDetected: Bool = false
     @State private var dogConfidence: Float = 0.0
@@ -150,11 +152,12 @@ struct MarleyView: View {
                 
                 if showTranslation {
                     VStack(spacing: 8) {
-                        // Dog speaks
-                        Text(translator.translation)
+                        // Dog speaks — always visible, persistent
+                        Text(lastTranslationHU.isEmpty ? translator.translation : lastTranslationHU)
                             .font(.system(size: 24, weight: .bold, design: .monospaced))
                             .foregroundStyle(.white)
                             .multilineTextAlignment(.center)
+                            .lineLimit(3)
                             .shadow(color: .black.opacity(0.9), radius: 6)
                             .padding(.horizontal, 32)
                             .padding(.vertical, 16)
@@ -163,10 +166,11 @@ struct MarleyView: View {
                                 RoundedRectangle(cornerRadius: 20)
                                     .stroke(.white.opacity(0.15), lineWidth: 1)
                             )
-                        Text(translator.translationEN)
+                        Text(lastTranslationEN.isEmpty ? translator.translationEN : lastTranslationEN)
                             .font(.system(size: 18, weight: .medium, design: .monospaced))
                             .foregroundStyle(.white.opacity(0.7))
                             .multilineTextAlignment(.center)
+                            .lineLimit(2)
                             .shadow(color: .black.opacity(0.7), radius: 4)
                             .padding(.horizontal, 32)
                         
@@ -325,8 +329,10 @@ struct MarleyView: View {
                     )
                     translator.translation = translation
                     showTranslation = true
+                    lastTranslationHU = translation
+                    lastTranslationEN = translator.translationEN
                     try? await Task.sleep(nanoseconds: 4_000_000_000)
-                    if translator.isListening { thinkingProgress = 0; showTranslation = false }
+                    if translator.isListening { thinkingProgress = 0 }
                     continue
                 }
                 
@@ -357,6 +363,8 @@ struct MarleyView: View {
                 )
                 translator.translation = translation
                 showTranslation = true
+                lastTranslationHU = translation
+                lastTranslationEN = translator.translationEN
                 
                 playBabySound()
                 if translator.isScared {
