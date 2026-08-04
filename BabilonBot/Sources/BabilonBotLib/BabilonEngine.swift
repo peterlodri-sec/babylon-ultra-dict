@@ -182,6 +182,7 @@ public class BabilonBotEngine {
         ("NKS", "Vegyetek jót ha tudtok"), ("Akkezdet Phiai", "Megalázó És Felszabadító"),
         ("Sub Bass Monster", "Nincs baj"), ("Belga", "Nemzeti Hiphop"),
         ("Akkezdet Phiai", "Akkezdet"), ("NKS", "Nincsen Kegyelem Soha"),
+        ("Solomun", "Nobody Is Not Loved"),
     ]
 
     public init() {}

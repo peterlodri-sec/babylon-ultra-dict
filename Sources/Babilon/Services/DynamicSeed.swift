@@ -16,6 +16,7 @@ final class DynamicSeed: @unchecked Sendable {
         ("Belga", "Nemzeti Hiphop", "888 Hz"),
         ("Akkezdet Phiai", "Akkezdet", "666 Hz"),
         ("NKS", "Nincsen Kegyelem Soha", "999 Hz"),
+        ("Solomun", "Nobody Is Not Loved", "432 Hz"),
     ]
     private var index = 0
     
