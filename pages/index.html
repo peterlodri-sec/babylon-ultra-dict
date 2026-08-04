@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BABYLON-ultra-dict — Marley Dog→Human Quant Translator</title>
+<style>
+:root { --bg: #0a0a0f; --fg: #e0e0e0; --cyan: #00e5ff; --green: #00ff88; --yellow: #ffcc00; --orange: #ff6b35; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: ui-monospace, 'SF Mono', Menlo, monospace; line-height: 1.6; }
+.hero { text-align: center; padding: 80px 20px 40px; }
+.hero h1 { font-size: 3rem; font-weight: 900; color: #fff; text-shadow: 0 0 40px var(--cyan); }
+.hero .sub { font-size: 1.2rem; color: var(--cyan); opacity: 0.7; margin-top: 12px; }
+.badge { display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 0.8rem; margin: 4px; border: 1px solid; }
+.badge-hu { border-color: var(--green); color: var(--green); }
+.badge-en { border-color: var(--cyan); color: var(--cyan); }
+.badge-dict { border-color: var(--yellow); color: var(--yellow); }
+.stats { display: flex; justify-content: center; gap: 32px; padding: 20px; flex-wrap: wrap; }
+.stat { text-align: center; }
+.stat .num { font-size: 2rem; font-weight: 900; color: var(--cyan); }
+.stat .label { font-size: 0.8rem; opacity: 0.5; }
+.lexicon { max-width: 1000px; margin: 0 auto; padding: 20px; }
+.lexicon h2 { color: var(--cyan); font-size: 1.5rem; margin: 32px 0 16px; text-align: center; }
+table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+th { text-align: left; padding: 10px 12px; border-bottom: 2px solid var(--cyan); color: var(--cyan); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; }
+td { padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.sound { color: var(--yellow); white-space: nowrap; font-weight: 600; }
+.hu { color: #fff; }
+.en { color: rgba(255,255,255,0.5); font-style: italic; }
+.lex-row:hover { background: rgba(0,229,255,0.04); }
+.pipeline { max-width: 800px; margin: 40px auto; padding: 20px; text-align: center; }
+.pipeline h2 { color: var(--cyan); margin-bottom: 16px; }
+.flow { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; font-size: 0.8rem; align-items: center; }
+.flow span { padding: 6px 12px; border-radius: 8px; background: rgba(0,229,255,0.08); border: 1px solid rgba(0,229,255,0.2); }
+.flow .arrow { background: none; border: none; color: var(--cyan); font-size: 1.2rem; }
+.footer { text-align: center; padding: 40px 20px; opacity: 0.3; font-size: 0.7rem; }
+.footer a { color: var(--cyan); }
+</style>
+</head>
+<body>
+
+<div class="hero">
+    <h1>BABYLON-ultra-dict</h1>
+    <p class="sub">Marley · kutya → ember · folyamatos élő kvant fordítás</p>
+    <p class="sub" style="font-size:0.9rem;opacity:0.5">continuous live dog→human quant translation · OM MANI PADME HUNG</p>
+    <p style="margin-top:20px">
+        <span class="badge badge-hu">🇭🇺 magyar</span>
+        <span class="badge badge-en">🇬🇧 english</span>
+        <span class="badge badge-dict">📖 40 phrases</span>
+    </p>
+</div>
+
+<div class="stats">
+    <div class="stat"><div class="num">40</div><div class="label">lexicon entries</div></div>
+    <div class="stat"><div class="num">5</div><div class="label">sound types</div></div>
+    <div class="stat"><div class="num">2</div><div class="label">languages</div></div>
+    <div class="stat"><div class="num">16</div><div class="label">ternarity dims</div></div>
+    <div class="stat"><div class="num">42</div><div class="label">ms think tick</div></div>
+</div>
+
+<div class="pipeline">
+    <h2>♾️ Quant Pipeline</h2>
+    <div class="flow">
+        <span>🎤 mic</span><span class="arrow">→</span>
+        <span>📷 camera</span><span class="arrow">→</span>
+        <span>🐕 dog detect</span><span class="arrow">→</span>
+        <span>👁 eye seed</span><span class="arrow">→</span>
+        <span>🎵 music.vaked.dev</span><span class="arrow">→</span>
+        <span>🔢 Xoshiro128**</span><span class="arrow">→</span>
+        <span>👶 babyDrift</span><span class="arrow">→</span>
+        <span>🔊 hu-HU TTS</span><span class="arrow">→</span>
+        <span>🔊 en-US TTS</span>
+    </div>
+</div>
+
+<div class="lexicon">
+    <h2>📖 BABYLON Lexicon — 40 Bilingual Dog→Human Phrases</h2>
+    <table>
+        <thead>
+            <tr><th>Sound</th><th>Magyar</th><th>English</th></tr>
+        </thead>
+        <tbody>
+            <tr class="lex-row">
+                <td class="sound">🎙️ Vakkantás — Riadó</td>
+                <td class="hu">Valaki jön. Figyelek. Biztonságban vagy.</td>
+                <td class="en">Someone comes. I watch. You are safe.</td>
+            </tr>
+            <tr class="lex-row">
+                <td class="sound">🎙️ Vakkantás — Riadó</td>
+                <td class="hu">Idegen a kapunál. Mögém. Védlek.</td>
+                <td class="en">Stranger at the gate. Behind me. I guard.</td>
+            </tr>
+            <tr class="lex-row">
+                <td class="sound">🎙️ Vakkantás — Riadó</td>
+                <td class="hu">Látom. Fal vagyok. Senki át nem jut.</td>
+                <td class="en">I see. I am the wall. None pass.</td>
+            </tr>
+            <tr class="lex-row">
+                <td class="sound">🎙️ Vakkantás — Riadó</td>
+                <td class="hu">Fülem ég. Szemem célon. Kész. Te pihenj.</td>
+                <td class="en">Ears up. Eyes locked. Ready. You rest.</td>
+            </tr>
+            <tr class="lex-row">
+                <td class="sound">🎙️ Vakkantás — Riadó</td>
+                <td class="hu">Mozgás elöl. Jelzem. Ne félj.</td>
+                <td class="en">Movement ahead. I signal. Fear not.</td>
+            </tr>
+            <tr class="lex-row">
+                <td class="sound">🎙️ Vakkantás — Riadó</td>
+                <td class="hu">Ismeretlen szag. Nem a falka. Riadó.</td>
+                <td class="en">Unknown scent. Not pack. Alert.</td>
+            </tr>
+            <tr class="lex-row">
+                <td class="sound">🎙️ Vakkantás — Riadó</td>
+                <td class="hu">Postás. Minden nap. Győzök.</td>
+                <td class="en">Mailman. Every day. I win.</td>
+            </tr>
+            <tr class="lex-row">
+                <td class="sound">🎙️ Vakkantás — Riadó</td>
+                <td class="hu">Hallom a lépteit. Közeledik. Készülj.</td>
+                <td class="en">I hear steps. Approaching. Prepare.</td>
+            </tr>
+            <tr class="lex-row">
+                <td class="sound">🎙️ Morgás — Éberség</td>
+                <td class="hu">Hallok valamit. Maradj közel. Vigyázok.</td>
+                <td class="en">I hear something. Stay close. I guard.</td>
+            </tr>
+            <tr class="lex-row">
+                <td class="sound">🎙️ Morgás — Éberség</td>
+                <td class="hu">Neszez a messzi. Megjegyzem. Aludj.</td>
+                <td class="en">A rustle far. I note it. Sleep on.</td>
+            </tr>
+            <tr class="lex-row">
+                <td class="sound">🎙️ Morgás — Éberség</td>
+                <td class="hu">Az éj beszél. Csenddel felelek.</td>
+                <td class="en">The night speaks. I answer silent.</td>
+            </tr>
+            <tr class="lex-row">
+                <td class="sound">🎙️ Morgás — Éberség</td>
+                <td class="hu">Körbejártam. Minden rendben. Tiszta.</td>
+                <td class="en">I circled. All clear. Clean sweep.</td>
+            </tr>
+            <tr class="lex-row">
+                <td class="sound">🎙️ Morgás — Éberség</td>
+                <td class="hu">Motor zúg. Nem veszély. Csak zaj.</td>
+                <td class="en">Engine hums. Not threat. Just noise.</td>
+            </tr>
+            <tr class="lex-row">
+                <td class="sound">🎙️ Morgás — Éberség</td>
+                <td class="hu">Macska a kerítésen. Jelentem. Üldözzem?</td>
+                <td class="en">Cat on fence. I report. Do I chase?</td>
+            </tr>
+            <tr class="lex-row">
+                <td class="sound">🎙️ Morgás — Éberség</td>
+                <td class="hu">Szomszéd kint. Ismerem. Nem ellenség.</td>
+                <td class="en">Neighbor outside. I know him. Not foe.</td>
+            </tr>
+            <tr class="lex-row">
+                <td class="sound">🎙️ Morgás — Éberség</td>
+                <td class="hu">Eső kopog. Tetőn. Hangos. Figyelek.</td>
+                <td class="en">Rain taps. On roof. Loud. I listen.</td>
+            </tr>
+            <tr class="lex-row">
+                <td class="sound">🎙️ Lélegzet — Nyugalom</td>
+                <td class="hu">Minden rendben. A ház csendes. Pihenj.</td>
+                <td class="en">All is well. The house is quiet. Rest.</td>
+            </tr>
+            <tr class="lex-row">
+                <td class="sound">🎙️ Lélegzet — Nyugalom</td>
+                <td class="hu">Szél az udvarban. Madár a fán. Béke.</td>
+                <td class="en">Wind in yard. Bird in tree. Peace.</td>
+            </tr>
+            <tr class="lex-row">
+                <td class="sound">🎙️ Lélegzet — Nyugalom</td>
+                <td class="hu">Szíved lassú. Enyém ráhangol. Pihenünk.</td>
+                <td class="en">Your heart slow. Mine syncs. We rest.</td>
+            </tr>
+            <tr class="lex-row">
+                <td class="sound">🎙️ Lélegzet — Nyugalom</td>
+                <td class="hu">Biztos zóna. Nulla veszély. Végtelen nyugalom.</td>
+                <td class="en">Safe zone. Zero threat. Infinite calm.</td>
+            </tr>
+            <tr class="lex-row">
+                <td class="sound">🎙️ Lélegzet — Nyugalom</td>
+                <td class="hu">Nap meleg. Padlón fekszem. Jó.</td>
+                <td class="en">Sun warm. I lie on floor. Good.</td>
+            </tr>
+            <tr class="lex-row">
+                <td class="sound">🎙️ Lélegzet — Nyugalom</td>
+                <td class="hu">Óra ketyeg. Lélegzet ritmus. Együtt.</td>
+                <td class="en">Clock ticks. Breath rhythm. Together.</td>
+            </tr>
+            <tr class="lex-row">
+                <td class="sound">🎙️ Lélegzet — Nyugalom</td>
+                <td class="hu">Semmi mozgás. Semmi hang. Tökéletes.</td>
+                <td class="en">No movement. No sound. Perfect.</td>
+            </tr>
+            <tr class="lex-row">
+                <td class="sound">🎙️ Lélegzet — Nyugalom</td>
+                <td class="hu">Szemed csukva. Én nyitva. Őrzöm álmod.</td>
+                <td class="en">Your eyes closed. Mine open. I guard your dream.</td>
+            </tr>
+            <tr class="lex-row">
+                <td class="sound">🎙️ Nyüszítés — Aggodalom</td>
+                <td class="hu">Valami nincs rendben. Nézd az ajtót. A rést is.</td>
+                <td class="en">Something wrong. Check the door. The gap too.</td>
+            </tr>
+            <tr class="lex-row">
+                <td class="sound">🎙️ Nyüszítés — Aggodalom</td>
+                <td class="hu">Nyugtalan vagyok. Levegő változott. Hátsó kapu.</td>
+                <td class="en">I am uneasy. Air changed. Back gate.</td>
+            </tr>
+            <tr class="lex-row">
+                <td class="sound">🎙️ Nyüszítés — Aggodalom</td>
+                <td class="hu">Árnyék mozdult. Nem szél. Nem madár. Nem ember.</td>
+                <td class="en">Shadow moved. Not wind. Not bird. Not human.</td>
+            </tr>
+            <tr class="lex-row">
+                <td class="sound">🎙️ Nyüszítés — Aggodalom</td>
+                <td class="hu">Gyomrom mondja: baj. Orrom semmit. Nyüszítek.</td>
+                <td class="en">My gut says: trouble. My nose: nothing. I whine.</td>
+            </tr>
+            <tr class="lex-row">
+                <td class="sound">🎙️ Nyüszítés — Aggodalom</td>
+                <td class="hu">Túl csendes. Gyanús. Ellenőrizzük.</td>
+                <td class="en">Too quiet. Suspicious. Let us check.</td>
+            </tr>
+            <tr class="lex-row">
+                <td class="sound">🎙️ Nyüszítés — Aggodalom</td>
+                <td class="hu">Vihar jön. Érzem a levegőben. Menjünk be.</td>
+                <td class="en">Storm coming. I smell it in the air. Go inside.</td>
+            </tr>
+            <tr class="lex-row">
+                <td class="sound">🎙️ Nyüszítés — Aggodalom</td>
+                <td class="hu">Fáj valamim. Mancsom. Nézd meg kérlek.</td>
+                <td class="en">Something hurts. My paw. Please look.</td>
+            </tr>
+            <tr class="lex-row">
+                <td class="sound">🎙️ Nyüszítés — Aggodalom</td>
+                <td class="hu">Egyedül hagytál. Sokáig. Hiányoztál.</td>
+                <td class="en">You left me alone. So long. I missed you.</td>
+            </tr>
+            <tr class="lex-row">
+                <td class="sound">🎙️ Csendes figyelem — Jelenlét</td>
+                <td class="hu">Itt vagyok. Itt vagy. Ez elég.</td>
+                <td class="en">I am here. You are here. Enough.</td>
+            </tr>
+            <tr class="lex-row">
+                <td class="sound">🎙️ Csendes figyelem — Jelenlét</td>
+                <td class="hu">Nem kell szó. Fejem öledben. Örökké.</td>
+                <td class="en">No words needed. My head on your knee. Forever.</td>
+            </tr>
+            <tr class="lex-row">
+                <td class="sound">🎙️ Csendes figyelem — Jelenlét</td>
+                <td class="hu">Nap elmozdult. Követtem. A folt meleg.</td>
+                <td class="en">Sun moved. I followed. The patch is warm now.</td>
+            </tr>
+            <tr class="lex-row">
+                <td class="sound">🎙️ Csendes figyelem — Jelenlét</td>
+                <td class="hu">Te lélegzel. Én lélegzem. A ház lélegzik. Egy.</td>
+                <td class="en">You breathe. I breathe. The house breathes. One.</td>
+            </tr>
+            <tr class="lex-row">
+                <td class="sound">🎙️ Csendes figyelem — Jelenlét</td>
+                <td class="hu">Mancsom a lábadon. Súly. Jelenlét. Szeretet.</td>
+                <td class="en">My paw on your foot. Weight. Presence. Love.</td>
+            </tr>
+            <tr class="lex-row">
+                <td class="sound">🎙️ Csendes figyelem — Jelenlét</td>
+                <td class="hu">Farok csóvál. Nem tudom miért. Csak.</td>
+                <td class="en">Tail wags. I do not know why. Just because.</td>
+            </tr>
+            <tr class="lex-row">
+                <td class="sound">🎙️ Csendes figyelem — Jelenlét</td>
+                <td class="hu">Nézel rám. Én vissza. Ennyi elég.</td>
+                <td class="en">You look at me. I look back. This is enough.</td>
+            </tr>
+            <tr class="lex-row">
+                <td class="sound">🎙️ Csendes figyelem — Jelenlét</td>
+                <td class="hu">Kezdődik az este. Melléd fekszem. Veled alszom.</td>
+                <td class="en">Evening begins. I lie beside you. I sleep with you.</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="footer">
+    <p>BABYLON-ultra-dict · <a href="https://github.com/peterlodri-sec/babylon-ultra-dict">github.com/peterlodri-sec/babylon-ultra-dict</a></p>
+    <p>Made in Hungary · PEACE )( LOVE () UNITY &lt;3</p>
+    <p>Generated 2026-08-04 02:57 UTC</p>
+</div>
+
+</body>
+</html>
