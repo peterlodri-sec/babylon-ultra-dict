@@ -196,6 +196,15 @@ struct MarleyView: View {
                         .font(.system(size: 10, design: .monospaced))
                         .foregroundStyle(.cyan.opacity(0.15))
                         .italic()
+                    // Periodic whisper
+                    if !translator.periodicWhisper.isEmpty {
+                        Text(translator.periodicWhisper)
+                            .font(.system(size: 9, design: .monospaced))
+                            .foregroundStyle(.cyan.opacity(0.25))
+                            .italic()
+                            .transition(.opacity)
+                            .padding(.vertical, 2)
+                    }
                     // OTTHON = BIZTONSÁG · SZABADSÁG · SZERETET
                     Text("OTTHON = BIZTONSÁG · SZABADSÁG · SZERETET")
                         .font(.system(size: 7, weight: .medium, design: .monospaced))
@@ -229,6 +238,27 @@ struct MarleyView: View {
             startContinuousTranslation()
             startWaveAnimation()
             authenticateDogOnStartup()
+            startPeriodicWhispers()
+        }
+    }
+    
+    // Periodic father whispers — background reassurance, always running
+    func startPeriodicWhispers() {
+        let whispers = [
+            "manóka… a csendben is vigyázom rád…",
+            "itt vagyok… mindig… mindig…",
+            "cuki kutya… apa nem megy sehova…",
+            "semmi baj soha… soha… soha…",
+            "Marley… te vagy a legjobb…",
+            "aludj nyugodtan… apa itt van…",
+        ]
+        Task { @MainActor in
+            while true {
+                try? await Task.sleep(nanoseconds: 30_000_000_000)
+                translator.periodicWhisper = whispers.randomElement()!
+                try? await Task.sleep(nanoseconds: 8_000_000_000)
+                translator.periodicWhisper = ""
+            }
         }
     }
     

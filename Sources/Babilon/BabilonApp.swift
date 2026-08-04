@@ -41,6 +41,7 @@ class MarleyTranslator {
     var translationEN: String = ""
     var humanResponse: String = ""
     var isScared: Bool = false
+    var periodicWhisper: String = ""
     var confidence: Float = 0.0
     var ternarityMatrix: [[Float]] = []
     
