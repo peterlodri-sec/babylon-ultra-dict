@@ -169,10 +169,16 @@ class MarleyTranslator {
             default:          soundKey = "Csendes figyelem"
             }
         } else {
+            // Stranger detected — friend, just szimat first, chill
             switch true {
-            case sum > 0.1:  soundKey = "Vakkantás"
-            case sum > -0.3: soundKey = "Morgás"
-            default:          soundKey = "Csendes figyelem"
+            case sum > 0.4:
+                soundKey = "Vakkantás"      // curious bark, not alert
+            case sum > 0.0:
+                soundKey = "Szimat"         // sniffing phase
+            case sum > -0.3:
+                soundKey = "Morgás"         // cautious
+            default:
+                soundKey = "Csendes figyelem"
             }
         }
         
@@ -187,19 +193,31 @@ class MarleyTranslator {
             translation = "Auuu. Auuu. Hallom a holdat. A falka hív."
             translationEN = "Awooo. Awooo. I hear the moon. The pack calls."
             humanResponse = "Minden oké manó. Itt vagyok. Nyugi."
+        } else if !personIsKnown && !humanSaysHere {
+            // Stranger — friend, just szimat first, chill
+            if soundKey == "Szimat" {
+                detectedSound = "Szimat — Ismerkedés"
+                translation = "Szimat. Új barát? Megnézlek. Nem bántalak."
+                translationEN = "Sniff. New friend? Let me check. I won't hurt you."
+            } else if soundKey == "Vakkantás" {
+                detectedSound = "Vakkantás — Kíváncsi"
+                translation = "Ki vagy? Szimatoljunk. Lehet barát."
+                translationEN = "Who are you? Let's sniff. Could be friend."
+            } else {
+                detectedSound = "Morgás — Óvatos"
+                translation = "Várj. Figyelek. Nem támadok. Csak nézek."
+                translationEN = "Wait. I watch. I don't attack. Just looking."
+            }
         } else if var picked = matches.randomElement() {
             if humanSaysHere {
                 detectedSound = "Emberi hang — ITT VAGYOK"
                 picked.hu = "Itt vagyok. \(personName). Én is. Védlek."
                 picked.en = "I am here. \(personName). Me too. I guard you."
-            } else if personIsKnown && Int.random(in: 0...2) == 0 {
+            } else             if personIsKnown && Int.random(in: 0...2) == 0 {
                 picked.hu = "\(personName). \(picked.hu)"
                 picked.en = "\(personName). \(picked.en)"
             }
-            if !personIsKnown && !humanSaysHere {
-                detectedSound = "Vakkantás — RIADÓ · STRANGER"
-                picked.en = "⚠️ " + picked.en
-            } else if !humanSaysHere {
+            if !humanSaysHere {
                 detectedSound = picked.sound
             }
             translation = picked.hu
@@ -220,6 +238,9 @@ class MarleyTranslator {
                 ]
                 humanResponse = scaredPhrases.randomElement()!
             }
+            if soundKey == "Vakkantás" && personIsKnown && (translation.contains("Védlek") || translation.contains("védlek") || translation.contains("véd")) {
+                humanResponse = "Köszönöm hogy védesz manóka. Jó kutya. Apa büszke rád."
+            }
             if soundKey == "Csendes figyelem" || soundKey == "Lélegzet" {
                 // Dog is calm/sleepy → human responds
                 let humanPhrases = [
@@ -229,6 +250,7 @@ class MarleyTranslator {
                     "Szundi. Nyugodtan. Szeretlek.",
                     "Te tökéletes vagy úgy ahogy vagy manóka.",
                     "Apa is téged. Mindennél jobban. Soha ne felejtsd.",
+                    "Igen. Te egy csodálatosan szép, okos és nyugodt baba vagy.",
                 ]
                 humanResponse = humanPhrases.randomElement()!
             }

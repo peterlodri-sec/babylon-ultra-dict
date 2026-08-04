@@ -105,7 +105,14 @@ struct MarleyView: View {
                                     .foregroundStyle(.purple.opacity(0.7))
                                     .shadow(color: .purple.opacity(0.3), radius: 3)
                             }
-                            if translator.detectedSound.contains("Kaja") {
+                            if translator.detectedSound.contains("Szimat") {
+                                Circle().fill(Color.yellow).frame(width: 10, height: 10)
+                                    .shadow(color: .yellow.opacity(0.6), radius: 4)
+                                Text("szimat · új barát?")
+                                    .font(.system(size: 14, weight: .semibold, design: .monospaced))
+                                    .foregroundStyle(.yellow.opacity(0.7))
+                            }
+                            if translator.detectedSound.contains("RIADÓ") {
                                 Circle().fill(Color.orange).frame(width: 10, height: 10)
                                     .shadow(color: .orange.opacity(0.6), radius: 4)
                                 Text("kaja · éhes")
