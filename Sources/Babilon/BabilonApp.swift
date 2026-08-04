@@ -144,14 +144,18 @@ class MarleyTranslator {
         let humanSpeaking = Float.random(in: 0...1) > 0.65
         let humanSaysHere = humanSpeaking && Float.random(in: 0...1) > 0.5
         
+        // Hungry detection — occasional kaja signal
+        let dogIsHungry = Float.random(in: 0...1) > 0.8
+        
         // Stranger detection
         let personIsKnown = Float.random(in: 0...1) > 0.3
         let personName = personIsKnown ? Self.pack.randomElement()! : "UNKNOWN"
         
         let soundKey: String
         if humanSaysHere {
-            // Human said "itt vagyok" — dog responds with calm acknowledgment
             soundKey = "Csendes figyelem"
+        } else if dogIsHungry {
+            soundKey = "Kaja"
         } else if personIsKnown {
             switch true {
             case sum > 0.3:  soundKey = "Vakkantás"
@@ -168,7 +172,13 @@ class MarleyTranslator {
         }
         
         let matches = Self.lexicon.filter { $0.sound.contains(soundKey) }
-        if var picked = matches.randomElement() {
+        if dogIsHungry {
+            // Kaja mode — dog is hungry
+            detectedSound = "Kaja — Éhes vagyok"
+            translation = "Kaja. Kaja. Éhes vagyok. Adj enni kérlek."
+            translationEN = "Food. Food. I am hungry. Please feed me."
+            humanResponse = "Egyél nyugodtan manóka. Vigyázom rád. Jó étvágyat."
+        } else if var picked = matches.randomElement() {
             if humanSaysHere {
                 detectedSound = "Emberi hang — ITT VAGYOK"
                 picked.hu = "Itt vagyok. \(personName). Én is. Védlek."
