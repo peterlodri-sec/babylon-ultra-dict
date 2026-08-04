@@ -251,6 +251,7 @@ struct MarleyView: View {
             "semmi baj soha… soha… soha…",
             "Marley… te vagy a legjobb…",
             "aludj nyugodtan… apa itt van…",
+            "nyugi drágám <3",
         ]
         Task { @MainActor in
             while true {
