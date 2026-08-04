@@ -138,29 +138,42 @@ class MarleyTranslator {
         
         confidence = min(abs(sum) / Float(buffer.count) * 2, 1.0)
         
+        // Stranger detection — pack recognition
+        // Simulated: 70% chance person is family, 30% unknown
+        let personIsKnown = Float.random(in: 0...1) > 0.3
+        let personName = personIsKnown ? Self.pack.randomElement()! : "UNKNOWN"
+        
         let soundKey: String
-        switch true {
-        case sum > 0.5:  soundKey = "Vakkantás"
-        case sum > 0.1:  soundKey = "Morgás"
-        case sum > -0.1: soundKey = "Lélegzet"
-        case sum > -0.5: soundKey = "Nyüszítés"
-        default:          soundKey = "Csendes figyelem"
+        if personIsKnown {
+            // Family detected — always calm, no alert
+            switch true {
+            case sum > 0.3:  soundKey = "Vakkantás"  // happy bark for family
+            case sum > -0.1: soundKey = "Lélegzet"
+            case sum > -0.5: soundKey = "Nyüszítés"
+            default:          soundKey = "Csendes figyelem"
+            }
+        } else {
+            // UNKNOWN detected — alert mode
+            switch true {
+            case sum > 0.1:  soundKey = "Vakkantás"  // alert for stranger
+            case sum > -0.3: soundKey = "Morgás"
+            default:          soundKey = "Csendes figyelem"
+            }
         }
         
         let matches = Self.lexicon.filter { $0.sound.contains(soundKey) }
         if var picked = matches.randomElement() {
-            // Occasionally personalize with family names
-            if Int.random(in: 0...3) == 0 {
-                let who: String
-                if soundKey == "Csendes figyelem" || soundKey == "Lélegzet" {
-                    who = Self.mothers.randomElement()!
-                } else {
-                    who = Self.fathers.randomElement()!
-                }
-                picked.hu = "\(who). \(picked.hu)"
-                picked.en = "\(who). \(picked.en)"
+            // Personalize with detected name
+            if personIsKnown && Int.random(in: 0...2) == 0 {
+                picked.hu = "\(personName). \(picked.hu)"
+                picked.en = "\(personName). \(picked.en)"
             }
-            detectedSound = picked.sound
+            if !personIsKnown {
+                detectedSound = "Vakkantás — RIADÓ · STRANGER"
+                picked.en = "⚠️ " + picked.en
+            } else {
+                detectedSound = picked.sound
+            }
             translation = picked.hu
             translationEN = picked.en
         }
