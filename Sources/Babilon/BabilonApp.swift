@@ -15,13 +15,13 @@ struct BabilonApp: App {
     }
 }
 
-// MARLEY — The primary target. The protector shepherd.
+// MARLEY — The primary target. Australian Shepherd.
 // Babilon is built for Marley and his pack.
 // OM MANI PADME HUNG seed. {-1,0,+1} ternary.
 //
-// Pack:
-//   Fathers: Peti, Nate, Kristof
-//   Mothers: Brigi, Bence, Jozsef, Katalin, Alexandra
+// Pack / Falka:
+//   Fathers / Apuk: Peti, Nate, Kristof
+//   Mothers / Anyuk: Brigi, Bence, Jozsef, Katalin, Alexandra
 //
 // Quant dog detection: each dog has a unique 16-dim ternary signature.
 // Camera → face detect → ternarity match → auth + name.
@@ -48,7 +48,7 @@ class MarleyTranslator {
     
     // Known dogs in Marley's pack — each with unique ternary signature
     static let dogRegistry: [QuantDogProfile] = [
-        QuantDogProfile(name: "Marley", breed: "Német juhász", role: "Őrző · Protector",
+        QuantDogProfile(name: "Marley", breed: "Ausztrál juhász", role: "Pásztor · Shepherd",
                          ternarity: [1,0,-1, 1,0,-1, 1,0,-1, 1,0,-1, 1,0,-1, 1]),
         QuantDogProfile(name: "Bodza", breed: "Vizsla", role: "Vadász · Hunter",
                          ternarity: [0,1,0, -1,1,0, 0,1,-1, 0,1,0, -1,1,0, 0,1]),
