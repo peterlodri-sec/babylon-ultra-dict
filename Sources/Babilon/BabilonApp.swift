@@ -39,6 +39,7 @@ class MarleyTranslator {
     var detectedSound: String = ""
     var translation: String = ""
     var translationEN: String = ""
+    var humanResponse: String = ""
     var confidence: Float = 0.0
     var ternarityMatrix: [[Float]] = []
     
@@ -183,6 +184,28 @@ class MarleyTranslator {
             }
             translation = picked.hu
             translationEN = picked.en
+            
+            // Human response — bidirectional conversation
+            // SZUNDI from dog → human responds with soothing words
+            humanResponse = ""
+            if soundKey == "Csendes figyelem" || soundKey == "Lélegzet" {
+                // Dog is calm/sleepy → human responds
+                let humanPhrases = [
+                    "Oké. Aludj nyugodtan szerelmem.",
+                    "Jó éjt. Itt vagyok. Aludj.",
+                    "Pihenj. Vigyázok rád én is.",
+                    "Szundi. Nyugodtan. Szeretlek.",
+                ]
+                humanResponse = humanPhrases.randomElement()!
+            }
+            if soundKey == "Vakkantás" && personIsKnown {
+                let humanGreetings = [
+                    "Szia! Itt vagyok! Jó kutya!",
+                    "Hazaértem! Nyugi, nyugi!",
+                    "Itt vagyok! Minden rendben!",
+                ]
+                humanResponse = humanGreetings.randomElement()!
+            }
         }
         
         ternarityMatrix = Self.marleyMatrix.chunked(into: 4).map { $0 }

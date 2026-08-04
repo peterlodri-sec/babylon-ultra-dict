@@ -119,6 +119,7 @@ struct MarleyView: View {
                 
                 if showTranslation {
                     VStack(spacing: 8) {
+                        // Dog speaks
                         Text(translator.translation)
                             .font(.system(size: 24, weight: .bold, design: .monospaced))
                             .foregroundStyle(.white)
@@ -137,6 +138,23 @@ struct MarleyView: View {
                             .multilineTextAlignment(.center)
                             .shadow(color: .black.opacity(0.7), radius: 4)
                             .padding(.horizontal, 32)
+                        
+                        // Human responds
+                        if !translator.humanResponse.isEmpty {
+                            VStack(spacing: 2) {
+                                Text("🗣️ ember válaszol")
+                                    .font(.system(size: 10, design: .monospaced))
+                                    .foregroundStyle(.cyan.opacity(0.4))
+                                Text(translator.humanResponse)
+                                    .font(.system(size: 20, weight: .medium, design: .monospaced))
+                                    .foregroundStyle(.cyan)
+                                    .multilineTextAlignment(.center)
+                                    .shadow(color: .cyan.opacity(0.3), radius: 4)
+                                    .padding(.horizontal, 32)
+                                    .padding(.vertical, 10)
+                                    .background(.ultraThinMaterial.opacity(0.5), in: RoundedRectangle(cornerRadius: 14))
+                            }
+                        }
                     }
                     .transition(.opacity)
                     .padding(.bottom, 20)
@@ -228,6 +246,13 @@ struct MarleyView: View {
                 
                 playBabySound()
                 speakTranslation(translation, seed: combinedSeed)
+                
+                // Human response TTS — speak the human reply too
+                if !translator.humanResponse.isEmpty {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+                        speakHumanResponse(translator.humanResponse)
+                    }
+                }
                 
                 try? await Task.sleep(nanoseconds: 2_000_000_000)
                 if translator.isListening { thinkingProgress = 0; showTranslation = false }
