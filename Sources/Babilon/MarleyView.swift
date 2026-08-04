@@ -94,6 +94,14 @@ struct MarleyView: View {
                                     .foregroundStyle(.cyan)
                                     .shadow(color: .cyan.opacity(0.4), radius: 4)
                             }
+                            if translator.isScared {
+                                Circle().fill(Color.purple).frame(width: 10, height: 10)
+                                    .shadow(color: .purple.opacity(0.8), radius: 6)
+                                Text("fél · lassú mód")
+                                    .font(.system(size: 14, weight: .semibold, design: .monospaced))
+                                    .foregroundStyle(.purple.opacity(0.7))
+                                    .shadow(color: .purple.opacity(0.3), radius: 3)
+                            }
                             if translator.detectedSound.contains("RIADÓ") {
                                 Circle().fill(Color.red).frame(width: 10, height: 10)
                                     .shadow(color: .red.opacity(0.8), radius: 6)
@@ -234,17 +242,23 @@ struct MarleyView: View {
         thinkingTimer?.cancel()
         thinkingTimer = Task { @MainActor in
             while translator.isListening {
-                let delay = UInt64((1_000_000_000...3_000_000_000).randomElement()!)
+                let scared = translator.isScared
+                let delay: UInt64 = scared
+                    ? UInt64((5_000_000_000...10_000_000_000).randomElement()!)  // 5-10s when scared
+                    : UInt64((1_000_000_000...3_000_000_000).randomElement()!)  // 1-3s normal
                 try? await Task.sleep(nanoseconds: delay)
                 guard translator.isListening else { break }
                 
                 // Gate: play only when dog + eye both above 51%
                 guard dogDetected && eyeDetected && dogConfidence > 0.51 else { continue }
                 
+                // Slower think animation when scared
                 thinkingProgress = 0
-                for _ in 0..<12 {
+                let steps = scared ? 24 : 12
+                let stepInc = 1.0 / Double(steps)
+                for _ in 0..<steps {
                     try? await Task.sleep(nanoseconds: 42_000_000)
-                    thinkingProgress += 0.083
+                    thinkingProgress += stepInc
                 }
                 
                 let combinedSeed = dynamicSeed.seed + dogEyeSeed
@@ -259,7 +273,11 @@ struct MarleyView: View {
                 showTranslation = true
                 
                 playBabySound()
-                speakTranslation(translation, seed: combinedSeed)
+                if translator.isScared {
+                    speakCalm(translation, seed: combinedSeed)
+                } else {
+                    speakTranslation(translation, seed: combinedSeed)
+                }
                 
                 // Human response TTS — speak the human reply too
                 if !translator.humanResponse.isEmpty {
@@ -326,6 +344,17 @@ struct MarleyView: View {
     }
     
     // Bilingual TTS — alternates EN+HU per cycle
+    // Scared dog TTS — slow, soft, gentle
+    func speakCalm(_ text: String, seed: String = "OM MANI PADME HUNG") {
+        guard !text.isEmpty else { return }
+        let utterance = AVSpeechUtterance(string: text)
+        utterance.voice = AVSpeechSynthesisVoice(language: "hu-HU")
+        utterance.rate = 0.25
+        utterance.pitchMultiplier = 0.65
+        utterance.volume = 0.55
+        BabilonApp.speech.speak(utterance)
+    }
+    
     func speakTranslation(_ text: String, seed: String = "OM MANI PADME HUNG") {
         guard !text.isEmpty else { return }
         let seedHash = abs(seed.hashValue % 100)

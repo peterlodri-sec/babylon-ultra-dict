@@ -40,6 +40,7 @@ class MarleyTranslator {
     var translation: String = ""
     var translationEN: String = ""
     var humanResponse: String = ""
+    var isScared: Bool = false
     var confidence: Float = 0.0
     var ternarityMatrix: [[Float]] = []
     
@@ -185,9 +186,15 @@ class MarleyTranslator {
             translation = picked.hu
             translationEN = picked.en
             
+            // Track fear state
+            isScared = (soundKey == "Nyüszítés")
+            
             // Human response — bidirectional conversation
-            // SZUNDI from dog → human responds with soothing words
             humanResponse = ""
+            if isScared {
+                // Dog is scared — father soothes
+                humanResponse = "Minden oké szerelmem. Különleges kutyus vagy. Mindennél jobban szeret apa."
+            }
             if soundKey == "Csendes figyelem" || soundKey == "Lélegzet" {
                 // Dog is calm/sleepy → human responds
                 let humanPhrases = [
