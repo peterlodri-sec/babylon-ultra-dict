@@ -7,168 +7,126 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3CF2036161E11D1A18290B50 /* MarleyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE3D79039325FA6CC13D382D /* MarleyView.swift */; };
-		6FE3F6F29194E4FFC60D0AB0 /* QuantVoiceGen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F08DCF684B3CF6C5213176B0 /* QuantVoiceGen.swift */; };
-		9663F07B2AFA6BD93A40480D /* BabilonApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE356262212FCF5C9B214515 /* BabilonApp.swift */; };
-		D6F3C283BD94BFF70396BBCE /* DynamicSeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DCA54B3CE2A8C0ECFD03753 /* DynamicSeed.swift */; };
+		395BB0C4219E5E19666EEDE3 /* DynamicSeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179765C9E3C04D7354384257 /* DynamicSeed.swift */; };
+		3BD15D6120A958D5FB9AE0A2 /* QuantVoiceGen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 515AF0CEBD1D0163992F0757 /* QuantVoiceGen.swift */; };
+		99156A436BEF5D6EE5608F67 /* BabilonApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E7F8541EDF45D1469BF3D81 /* BabilonApp.swift */; };
+		9BD169C014709440921781EC /* MarleyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0928C69D2B9F5A9AD556C3 /* MarleyView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		2C96C9D42D3D346AFEEC5B83 /* Babilon.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Babilon.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		3DCA54B3CE2A8C0ECFD03753 /* DynamicSeed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicSeed.swift; sourceTree = "<group>"; };
-		EE356262212FCF5C9B214515 /* BabilonApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BabilonApp.swift; sourceTree = "<group>"; };
-		F08DCF684B3CF6C5213176B0 /* QuantVoiceGen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuantVoiceGen.swift; sourceTree = "<group>"; };
-		FE3D79039325FA6CC13D382D /* MarleyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarleyView.swift; sourceTree = "<group>"; };
+		179765C9E3C04D7354384257 /* DynamicSeed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicSeed.swift; sourceTree = "<group>"; };
+		3D0928C69D2B9F5A9AD556C3 /* MarleyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarleyView.swift; sourceTree = "<group>"; };
+		4E7F8541EDF45D1469BF3D81 /* BabilonApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BabilonApp.swift; sourceTree = "<group>"; };
+		515AF0CEBD1D0163992F0757 /* QuantVoiceGen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuantVoiceGen.swift; sourceTree = "<group>"; };
+		52210B2CB366BC026E658126 /* BABYLON-ultra-dict.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = "BABYLON-ultra-dict.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
-		64EE362E21BC452F2F63FFF1 /* Babilon */ = {
+		7E1A2CE0EC9A6C31A0418E40 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				EE356262212FCF5C9B214515 /* BabilonApp.swift */,
-				FE3D79039325FA6CC13D382D /* MarleyView.swift */,
-				89DDC11F8DFF3159702FA4DA /* Services */,
+				52210B2CB366BC026E658126 /* BABYLON-ultra-dict.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		9A26D87DF6A2009291FD4F64 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				179765C9E3C04D7354384257 /* DynamicSeed.swift */,
+				515AF0CEBD1D0163992F0757 /* QuantVoiceGen.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		B602C321F391851810B5FD4C /* Babilon */ = {
+			isa = PBXGroup;
+			children = (
+				4E7F8541EDF45D1469BF3D81 /* BabilonApp.swift */,
+				3D0928C69D2B9F5A9AD556C3 /* MarleyView.swift */,
+				9A26D87DF6A2009291FD4F64 /* Services */,
 			);
 			name = Babilon;
 			path = Sources/Babilon;
 			sourceTree = "<group>";
 		};
-		89DDC11F8DFF3159702FA4DA /* Services */ = {
+		C3B554BE399A284D0868B27A = {
 			isa = PBXGroup;
 			children = (
-				3DCA54B3CE2A8C0ECFD03753 /* DynamicSeed.swift */,
-				F08DCF684B3CF6C5213176B0 /* QuantVoiceGen.swift */,
+				B602C321F391851810B5FD4C /* Babilon */,
+				7E1A2CE0EC9A6C31A0418E40 /* Products */,
 			);
-			path = Services;
-			sourceTree = "<group>";
-		};
-		C6CE9693E98EFBF9A6E651E7 = {
-			isa = PBXGroup;
-			children = (
-				64EE362E21BC452F2F63FFF1 /* Babilon */,
-				CDFA62292A6C6AFE59BF5E59 /* Products */,
-			);
-			sourceTree = "<group>";
-		};
-		CDFA62292A6C6AFE59BF5E59 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				2C96C9D42D3D346AFEEC5B83 /* Babilon.app */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		E05B158191ED04CBFDD009E4 /* Babilon */ = {
+		3C02EED1E3056ABBF0784B15 /* BABYLON-ultra-dict */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 5D2AA596A5794724E59FD22D /* Build configuration list for PBXNativeTarget "Babilon" */;
+			buildConfigurationList = 154AA0C76863D74508FF889D /* Build configuration list for PBXNativeTarget "BABYLON-ultra-dict" */;
 			buildPhases = (
-				D4ECC0799FF89A58645228C5 /* Sources */,
+				098564E767BDC041E335427C /* Sources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = Babilon;
+			name = "BABYLON-ultra-dict";
 			packageProductDependencies = (
 			);
-			productName = Babilon;
-			productReference = 2C96C9D42D3D346AFEEC5B83 /* Babilon.app */;
+			productName = "BABYLON-ultra-dict";
+			productReference = 52210B2CB366BC026E658126 /* BABYLON-ultra-dict.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		0A4B8EEAFE46B74217E1193F /* Project object */ = {
+		6A1857FF27972AD31C9CA7CD /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
-					E05B158191ED04CBFDD009E4 = {
+					3C02EED1E3056ABBF0784B15 = {
 						DevelopmentTeam = 7CFQYBX575;
 					};
 				};
 			};
-			buildConfigurationList = A5688AFA44330C5BE71B512B /* Build configuration list for PBXProject "Babilon" */;
+			buildConfigurationList = DF390365C54F5EE5E1DE5979 /* Build configuration list for PBXProject "BABYLON-ultra-dict" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				Base,
 				en,
 			);
-			mainGroup = C6CE9693E98EFBF9A6E651E7;
+			mainGroup = C3B554BE399A284D0868B27A;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = CDFA62292A6C6AFE59BF5E59 /* Products */;
+			productRefGroup = 7E1A2CE0EC9A6C31A0418E40 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				E05B158191ED04CBFDD009E4 /* Babilon */,
+				3C02EED1E3056ABBF0784B15 /* BABYLON-ultra-dict */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
-		D4ECC0799FF89A58645228C5 /* Sources */ = {
+		098564E767BDC041E335427C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9663F07B2AFA6BD93A40480D /* BabilonApp.swift in Sources */,
-				D6F3C283BD94BFF70396BBCE /* DynamicSeed.swift in Sources */,
-				3CF2036161E11D1A18290B50 /* MarleyView.swift in Sources */,
-				6FE3F6F29194E4FFC60D0AB0 /* QuantVoiceGen.swift in Sources */,
+				99156A436BEF5D6EE5608F67 /* BabilonApp.swift in Sources */,
+				395BB0C4219E5E19666EEDE3 /* DynamicSeed.swift in Sources */,
+				9BD169C014709440921781EC /* MarleyView.swift in Sources */,
+				3BD15D6120A958D5FB9AE0A2 /* QuantVoiceGen.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		13172BC4407B99C244574ECE /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = Resources/Babilon.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = 7CFQYBX575;
-				INFOPLIST_FILE = Resources/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = dev.vaked.babilon;
-				SDKROOT = iphoneos;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
-				SWIFT_VERSION = 6.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
-		2CCD361A00314FEF99EB888E /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = Resources/Babilon.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = 7CFQYBX575;
-				INFOPLIST_FILE = Resources/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = dev.vaked.babilon;
-				SDKROOT = iphoneos;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
-				SWIFT_VERSION = 6.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		601144704296849470C18561 /* Debug */ = {
+		8A90D01E8FA3D21240549E5F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -230,7 +188,49 @@
 			};
 			name = Debug;
 		};
-		AE3043CCA1F2805209941D93 /* Release */ = {
+		8B3FECB15D799A54FC37C898 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Resources/Babilon.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = 7CFQYBX575;
+				INFOPLIST_FILE = Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "dev.vaked.babylon-ultra-dict";
+				SDKROOT = iphoneos;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		DBA04C87043974351FC07F37 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Resources/Babilon.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = 7CFQYBX575;
+				INFOPLIST_FILE = Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "dev.vaked.babylon-ultra-dict";
+				SDKROOT = iphoneos;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		ECCB9E868D080E61F88F5838 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -288,25 +288,25 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		5D2AA596A5794724E59FD22D /* Build configuration list for PBXNativeTarget "Babilon" */ = {
+		154AA0C76863D74508FF889D /* Build configuration list for PBXNativeTarget "BABYLON-ultra-dict" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				2CCD361A00314FEF99EB888E /* Debug */,
-				13172BC4407B99C244574ECE /* Release */,
+				DBA04C87043974351FC07F37 /* Debug */,
+				8B3FECB15D799A54FC37C898 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		A5688AFA44330C5BE71B512B /* Build configuration list for PBXProject "Babilon" */ = {
+		DF390365C54F5EE5E1DE5979 /* Build configuration list for PBXProject "BABYLON-ultra-dict" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				601144704296849470C18561 /* Debug */,
-				AE3043CCA1F2805209941D93 /* Release */,
+				8A90D01E8FA3D21240549E5F /* Debug */,
+				ECCB9E868D080E61F88F5838 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 0A4B8EEAFE46B74217E1193F /* Project object */;
+	rootObject = 6A1857FF27972AD31C9CA7CD /* Project object */;
 }

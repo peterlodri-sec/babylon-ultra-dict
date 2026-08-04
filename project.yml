@@ -1,13 +1,13 @@
-name: Babilon
+name: BABYLON-ultra-dict
 targets:
-  Babilon:
+  BABYLON-ultra-dict:
     type: application
     platform: iOS
     deploymentTarget: "18.0"
     sources:
       - Sources/Babilon
     settings:
-      PRODUCT_BUNDLE_IDENTIFIER: dev.vaked.babilon
+      PRODUCT_BUNDLE_IDENTIFIER: dev.vaked.babylon-ultra-dict
       INFOPLIST_FILE: Resources/Info.plist
       DEVELOPMENT_TEAM: 7CFQYBX575
       SWIFT_VERSION: "6.0"

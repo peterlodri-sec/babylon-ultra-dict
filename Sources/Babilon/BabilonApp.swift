@@ -24,6 +24,7 @@ class MarleyTranslator {
     var isListening = false
     var detectedSound: String = ""
     var translation: String = ""
+    var translationEN: String = ""
     var confidence: Float = 0.0
     var ternarityMatrix: [[Float]] = []
     
@@ -31,6 +32,51 @@ class MarleyTranslator {
     static let marleyMatrix: [Float] = [
         // Shepherd: protective, alert, loyal, calm-dominant
         1, 0, -1, 1, 0, -1, 1, 0, -1, 1, 0, -1, 1, 0, -1, 1
+    ]
+    
+    // BABYLON-ultra-dict — bilingual Hungarian+English lexicon
+    // 8 phrases per sound type, 40 total
+    static let lexicon: [(sound: String, hu: String, en: String)] = [
+        ("Vakkantás — Riadó",    "Valaki jön. Figyelek. Biztonságban vagy.", "Someone comes. I watch. You are safe."),
+        ("Vakkantás — Riadó",    "Idegen a kapunál. Mögém. Védlek.", "Stranger at the gate. Behind me. I guard."),
+        ("Vakkantás — Riadó",    "Látom. Fal vagyok. Senki át nem jut.", "I see. I am the wall. None pass."),
+        ("Vakkantás — Riadó",    "Fülem ég. Szemem célon. Kész. Te pihenj.", "Ears up. Eyes locked. Ready. You rest."),
+        ("Vakkantás — Riadó",    "Mozgás elöl. Jelzem. Ne félj.", "Movement ahead. I signal. Fear not."),
+        ("Vakkantás — Riadó",    "Ismeretlen szag. Nem a falka. Riadó.", "Unknown scent. Not pack. Alert."),
+        ("Vakkantás — Riadó",    "Postás. Minden nap. Győzök.", "Mailman. Every day. I win."),
+        ("Vakkantás — Riadó",    "Hallom a lépteit. Közeledik. Készülj.", "I hear steps. Approaching. Prepare."),
+        ("Morgás — Éberség",     "Hallok valamit. Maradj közel. Vigyázok.", "I hear something. Stay close. I guard."),
+        ("Morgás — Éberség",     "Neszez a messzi. Megjegyzem. Aludj.", "A rustle far. I note it. Sleep on."),
+        ("Morgás — Éberség",     "Az éj beszél. Csenddel felelek.", "The night speaks. I answer silent."),
+        ("Morgás — Éberség",     "Körbejártam. Minden rendben. Tiszta.", "I circled. All clear. Clean sweep."),
+        ("Morgás — Éberség",     "Motor zúg. Nem veszély. Csak zaj.", "Engine hums. Not threat. Just noise."),
+        ("Morgás — Éberség",     "Macska a kerítésen. Jelentem. Üldözzem?", "Cat on fence. I report. Do I chase?"),
+        ("Morgás — Éberség",     "Szomszéd kint. Ismerem. Nem ellenség.", "Neighbor outside. I know him. Not foe."),
+        ("Morgás — Éberség",     "Eső kopog. Tetőn. Hangos. Figyelek.", "Rain taps. On roof. Loud. I listen."),
+        ("Lélegzet — Nyugalom",  "Minden rendben. A ház csendes. Pihenj.", "All is well. The house is quiet. Rest."),
+        ("Lélegzet — Nyugalom",  "Szél az udvarban. Madár a fán. Béke.", "Wind in yard. Bird in tree. Peace."),
+        ("Lélegzet — Nyugalom",  "Szíved lassú. Enyém ráhangol. Pihenünk.", "Your heart slow. Mine syncs. We rest."),
+        ("Lélegzet — Nyugalom",  "Biztos zóna. Nulla veszély. Végtelen nyugalom.", "Safe zone. Zero threat. Infinite calm."),
+        ("Lélegzet — Nyugalom",  "Nap meleg. Padlón fekszem. Jó.", "Sun warm. I lie on floor. Good."),
+        ("Lélegzet — Nyugalom",  "Óra ketyeg. Lélegzet ritmus. Együtt.", "Clock ticks. Breath rhythm. Together."),
+        ("Lélegzet — Nyugalom",  "Semmi mozgás. Semmi hang. Tökéletes.", "No movement. No sound. Perfect."),
+        ("Lélegzet — Nyugalom",  "Szemed csukva. Én nyitva. Én őrzöm álmod.", "Your eyes closed. Mine open. I guard your dream."),
+        ("Nyüszítés — Aggodalom", "Valami nincs rendben. Nézd az ajtót. A rést is.", "Something wrong. Check the door. The gap too."),
+        ("Nyüszítés — Aggodalom", "Nyugtalan vagyok. Levegő változott. Hátsó kapu.", "I am uneasy. Air changed. Back gate."),
+        ("Nyüszítés — Aggodalom", "Árnyék mozdult. Nem szél. Nem madár. Nem ember.", "Shadow moved. Not wind. Not bird. Not human."),
+        ("Nyüszítés — Aggodalom", "Gyomrom mondja: baj. Orrom semmit. Nyüszítek.", "My gut says: trouble. My nose: nothing. I whine."),
+        ("Nyüszítés — Aggodalom", "Túl csendes. Gyanús. Ellenőrizzük.", "Too quiet. Suspicious. Let us check."),
+        ("Nyüszítés — Aggodalom", "Vihar jön. Érzem a levegőben. Menjünk be.", "Storm coming. I smell it in the air. Go inside."),
+        ("Nyüszítés — Aggodalom", "Fáj valamim. Mancsom. Nézd meg kérlek.", "Something hurts. My paw. Please look."),
+        ("Nyüszítés — Aggodalom", "Egyedül hagytál. Sokáig. Hiányoztál.", "You left me alone. So long. I missed you."),
+        ("Csendes figyelem — Jelenlét", "Itt vagyok. Itt vagy. Ez elég.", "I am here. You are here. Enough."),
+        ("Csendes figyelem — Jelenlét", "Nem kell szó. Fejem öledben. Örökké.", "No words needed. My head on your knee. Forever."),
+        ("Csendes figyelem — Jelenlét", "Nap elmozdult. Követtem. A folt meleg.", "Sun moved. I followed. The patch is warm now."),
+        ("Csendes figyelem — Jelenlét", "Te lélegzel. Én lélegzem. A ház lélegzik. Egy.", "You breathe. I breathe. The house breathes. One."),
+        ("Csendes figyelem — Jelenlét", "Mancsom a lábadon. Súly. Jelenlét. Szeretet.", "My paw on your foot. Weight. Presence. Love."),
+        ("Csendes figyelem — Jelenlét", "Farok csóvál. Nem tudom miért. Csak.", "Tail wags. I do not know why. Just because."),
+        ("Csendes figyelem — Jelenlét", "Nézel rám. Én vissza. Ennyi elég.", "You look at me. I look back. This is enough."),
+        ("Csendes figyelem — Jelenlét", "Kezdődik az este. Melléd fekszem. Veled alszom.", "Evening begins. I lie beside you. I sleep with you."),
     ]
     
     func startListening() { isListening = true }
@@ -44,47 +90,21 @@ class MarleyTranslator {
         
         confidence = min(abs(sum) / Float(buffer.count) * 2, 1.0)
         
+        // Filter matching phrases by sound type
+        let soundKey: String
         switch true {
-        case sum > 0.5:
-            detectedSound = "Vakkantás — Riadó"
-            translation = [
-                "Valaki jön. Én figyelek. Te biztonságban vagy.",
-                "Idegen a kapunál. Mögém bújj. Én védelek.",
-                "Látom őket. Én vagyok a fal. Senki nem jut át.",
-                "Fülem égnek. Szemem a célon. Készen állok. Te pihenj.",
-            ].randomElement()!
-        case sum > 0.1:
-            detectedSound = "Mély morgás — Éberség"
-            translation = [
-                "Hallok valamit. Maradj közel. Én vigyázok rád.",
-                "Egy neszez a messzi. Megjegyzem. Aludj tovább.",
-                "Az éj beszél. Én csenddel felelek neki.",
-                "Körbejártam. Minden rendben. Jelentem: tiszta.",
-            ].randomElement()!
-        case sum > -0.1:
-            detectedSound = "Halk lélegzet — Nyugalom"
-            translation = [
-                "Minden rendben. A ház csendes. Pihenjünk.",
-                "Szél az udvarban. Madár a fán. Béke van.",
-                "A szíved lassú. Az enyém ráhangolódik. Pihenünk.",
-                "Biztos zóna. Nulla veszély. Végtelen nyugalom. Lélegezz.",
-            ].randomElement()!
-        case sum > -0.5:
-            detectedSound = "Nyüszítés — Aggodalom"
-            translation = [
-                "Valami nincs rendben. Nézz az ajtóra. A résre is.",
-                "Nyugtalan vagyok. A levegő megváltozott. Nézz a hátsó kapura.",
-                "Egy árnyék mozdult. Nem szél. Nem madár. Nem ember. Nézd meg.",
-                "A gyomrom azt mondja: baj. Az orrom semmit. Nyüszítek.",
-            ].randomElement()!
-        default:
-            detectedSound = "Csendes figyelem — Jelenlét"
-            translation = [
-                "Itt vagyok. Itt vagy. Ez elég.",
-                "Nem kell szó. A fejem az öledben. Örökké.",
-                "A nap elmozdult. Követtem. A folt most meleg.",
-                "Te lélegzel. Én lélegzem. A ház lélegzik. Egyek vagyunk.",
-            ].randomElement()!
+        case sum > 0.5:  soundKey = "Vakkantás"
+        case sum > 0.1:  soundKey = "Morgás"
+        case sum > -0.1: soundKey = "Lélegzet"
+        case sum > -0.5: soundKey = "Nyüszítés"
+        default:          soundKey = "Csendes figyelem"
+        }
+        
+        let matches = Self.lexicon.filter { $0.sound.contains(soundKey) }
+        if let picked = matches.randomElement() {
+            detectedSound = picked.sound
+            translation = picked.hu
+            translationEN = picked.en
         }
         
         ternarityMatrix = Self.marleyMatrix.chunked(into: 4).map { $0 }

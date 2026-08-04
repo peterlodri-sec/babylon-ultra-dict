@@ -57,20 +57,29 @@ struct MarleyView: View {
                             .padding(.horizontal, 32)
                             .padding(.vertical, 12)
                             .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
+                        Text(translator.translationEN)
+                            .font(.system(size: 14, design: .monospaced))
+                            .foregroundStyle(.white.opacity(0.5))
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, 32)
                     }
                     .transition(.opacity)
                     .padding(.bottom, 20)
                 }
                 
-                // OM MANI PADME HUNG footer + dynamic seed
+                // BABYLON-ultra-dict footer
                 VStack(spacing: 2) {
-                    Text(dynamicSeed.seed)
+                    Text("BABYLON-ultra-dict")
                         .font(.system(size: 7, design: .monospaced))
-                        .foregroundStyle(.cyan.opacity(0.4))
+                        .foregroundStyle(.cyan.opacity(0.3))
+                        .lineLimit(1)
+                    Text(dynamicSeed.seed)
+                        .font(.system(size: 6, design: .monospaced))
+                        .foregroundStyle(.cyan.opacity(0.2))
                         .lineLimit(1)
                     Text("🎵 \(dynamicSeed.track)")
                         .font(.system(size: 6, design: .monospaced))
-                        .foregroundStyle(.cyan.opacity(0.2))
+                        .foregroundStyle(.cyan.opacity(0.15))
                 }
                 .padding(.bottom, 36)
             }
@@ -159,27 +168,43 @@ struct MarleyView: View {
         return "\(b1)… \(mid) …\(feeling)."
     }
     
-    // Random baby coo/babble — Hungarian dog sounds
+    // Random baby coo/babble — bilingual EN+HU
     func playBabySound() {
-        let babble = ["vau", "nyih", "brr", "mmm", "hau", "szű", "óó", "gá"]
-        let picked = babble.randomElement()!
+        let huBabble = ["vau", "nyih", "brr", "mmm", "hau", "szű", "óó", "gá"]
+        let enBabble = ["woof", "brrr", "mmm", "baba", "gah", "ooo", "wah"]
+        let picked = (Bool.random() ? huBabble : enBabble).randomElement()!
         let utterance = AVSpeechUtterance(string: picked)
-        utterance.voice = AVSpeechSynthesisVoice(language: "hu-HU")
-        utterance.rate = 0.22
+        let useHU = huBabble.contains(picked)
+        utterance.voice = AVSpeechSynthesisVoice(language: useHU ? "hu-HU" : "en-US")
+        utterance.rate = useHU ? 0.22 : 0.25
         utterance.pitchMultiplier = 1.35
         utterance.volume = 0.4
         BabilonApp.speech.speak(utterance)
     }
     
+    // Bilingual TTS — alternates EN+HU per cycle
     func speakTranslation(_ text: String, seed: String = "OM MANI PADME HUNG") {
         guard !text.isEmpty else { return }
-        let utterance = AVSpeechUtterance(string: text)
-        utterance.voice = AVSpeechSynthesisVoice(language: "hu-HU")
         let seedHash = abs(seed.hashValue % 100)
-        utterance.rate = 0.35 + Float(seedHash) / 500.0
-        utterance.pitchMultiplier = 0.75 + Float(seedHash) / 1000.0
+        
+        // Speak in alternate language based on seed parity
+        let useHungarian = (seedHash % 2) == 0
+        let utterance = AVSpeechUtterance(string: text)
+        utterance.voice = AVSpeechSynthesisVoice(language: useHungarian ? "hu-HU" : "en-US")
+        utterance.rate = useHungarian ? 0.35 + Float(seedHash) / 500.0 : 0.40 + Float(seedHash) / 500.0
+        utterance.pitchMultiplier = useHungarian ? 0.75 + Float(seedHash) / 1000.0 : 0.85 + Float(seedHash) / 1000.0
         utterance.volume = 0.85
         BabilonApp.speech.speak(utterance)
+        
+        // Speak the other language with slight delay
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+            let utt2 = AVSpeechUtterance(string: text)
+            utt2.voice = AVSpeechSynthesisVoice(language: useHungarian ? "en-US" : "hu-HU")
+            utt2.rate = useHungarian ? 0.40 : 0.35
+            utt2.pitchMultiplier = useHungarian ? 0.85 : 0.75
+            utt2.volume = 0.7
+            BabilonApp.speech.speak(utt2)
+        }
     }
     
     func startCamera() {
