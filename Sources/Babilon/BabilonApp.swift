@@ -262,6 +262,7 @@ class MarleyTranslator {
                     "Hazaértem! Nyugi, nyugi!",
                     "Itt vagyok! Minden rendben!",
                     "Yes. A falka szeret téged. Te vagy a bölcs vezére manóka.",
+                    "Apa mindig figyel. Mindig. Nyugi.",
                 ]
                 humanResponse = humanGreetings.randomElement()!
             }
