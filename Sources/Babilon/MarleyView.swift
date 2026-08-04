@@ -217,6 +217,9 @@ struct MarleyView: View {
                             .padding(.vertical, 2)
                     }
                     // OTTHON = BIZTONSÁG · SZABADSÁG · SZERETET
+                    Text("BABA = SELF = MARLEY = {ME}")
+                        .font(.system(size: 8, weight: .bold, design: .monospaced))
+                        .foregroundStyle(.cyan.opacity(0.3))
                     Text("OTTHON = BIZTONSÁG · SZABADSÁG · SZERETET")
                         .font(.system(size: 7, weight: .medium, design: .monospaced))
                         .foregroundStyle(.cyan.opacity(0.2))

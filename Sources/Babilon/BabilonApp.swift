@@ -265,6 +265,7 @@ class MarleyTranslator {
                     "Te tökéletes vagy úgy ahogy vagy manóka.",
                     "Apa is téged. Mindennél jobban. Soha ne felejtsd.",
                     "Igen. Te egy csodálatosan szép, okos és nyugodt baba vagy.",
+                    "Baba. Self. Marley. Én. Egyek vagyunk.",
                 ]
                 humanResponse = humanPhrases.randomElement()!
             }
