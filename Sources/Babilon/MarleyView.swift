@@ -42,22 +42,26 @@ struct MarleyView: View {
             
             VStack {
                 Spacer()
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: 6) {
                     Text("CUKI KUTYA")
-                        .font(.system(size: 28, design: .monospaced)).fontWeight(.bold)
-                        .foregroundStyle(.white.opacity(0.7))
-                        .shadow(color: .black.opacity(0.5), radius: 4)
+                        .font(.system(size: 42, weight: .black, design: .monospaced))
+                        .foregroundStyle(.white)
+                        .shadow(color: .black.opacity(0.8), radius: 8)
                     if dogDetected {
-                        HStack(spacing: 6) {
-                            Circle().fill(Color.green).frame(width: 8, height: 8)
+                        HStack(spacing: 8) {
+                            Circle().fill(Color.green).frame(width: 12, height: 12)
+                                .shadow(color: .green.opacity(0.6), radius: 4)
                             Text("dog · \(Int(dogConfidence * 100))%")
-                                .font(.system(size: 16, design: .monospaced))
-                                .foregroundStyle(.green.opacity(0.7))
+                                .font(.system(size: 22, weight: .bold, design: .monospaced))
+                                .foregroundStyle(.green)
+                                .shadow(color: .black.opacity(0.7), radius: 3)
                             if eyeDetected {
-                                Circle().fill(Color.yellow).frame(width: 6, height: 6)
+                                Circle().fill(Color.yellow).frame(width: 10, height: 10)
+                                    .shadow(color: .yellow.opacity(0.6), radius: 4)
                                 Text("eyes · \(dogEyeSeed.dropFirst(5))")
-                                    .font(.system(size: 14, design: .monospaced))
-                                    .foregroundStyle(.yellow.opacity(0.7))
+                                    .font(.system(size: 18, weight: .semibold, design: .monospaced))
+                                    .foregroundStyle(.yellow)
+                                    .shadow(color: .black.opacity(0.7), radius: 3)
                             }
                         }
                     }
@@ -67,18 +71,24 @@ struct MarleyView: View {
                 Spacer()
                 
                 if showTranslation {
-                    VStack(spacing: 6) {
+                    VStack(spacing: 8) {
                         Text(translator.translation)
-                            .font(.system(size: 18, design: .monospaced))
+                            .font(.system(size: 24, weight: .bold, design: .monospaced))
                             .foregroundStyle(.white)
                             .multilineTextAlignment(.center)
+                            .shadow(color: .black.opacity(0.9), radius: 6)
                             .padding(.horizontal, 32)
-                            .padding(.vertical, 12)
-                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
+                            .padding(.vertical, 16)
+                            .background(.ultraThinMaterial.opacity(0.85), in: RoundedRectangle(cornerRadius: 20))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 20)
+                                    .stroke(.white.opacity(0.15), lineWidth: 1)
+                            )
                         Text(translator.translationEN)
-                            .font(.system(size: 14, design: .monospaced))
-                            .foregroundStyle(.white.opacity(0.5))
+                            .font(.system(size: 18, weight: .medium, design: .monospaced))
+                            .foregroundStyle(.white.opacity(0.7))
                             .multilineTextAlignment(.center)
+                            .shadow(color: .black.opacity(0.7), radius: 4)
                             .padding(.horizontal, 32)
                     }
                     .transition(.opacity)
@@ -88,16 +98,16 @@ struct MarleyView: View {
                 // BABYLON-ultra-dict footer
                 VStack(spacing: 2) {
                     Text("BABYLON-ultra-dict")
-                        .font(.system(size: 7, design: .monospaced))
-                        .foregroundStyle(.cyan.opacity(0.3))
+                        .font(.system(size: 9, design: .monospaced))
+                        .foregroundStyle(.cyan.opacity(0.5))
                         .lineLimit(1)
                     Text(dynamicSeed.seed)
-                        .font(.system(size: 6, design: .monospaced))
-                        .foregroundStyle(.cyan.opacity(0.2))
+                        .font(.system(size: 7, design: .monospaced))
+                        .foregroundStyle(.cyan.opacity(0.35))
                         .lineLimit(1)
                     Text("🎵 \(dynamicSeed.track)")
-                        .font(.system(size: 6, design: .monospaced))
-                        .foregroundStyle(.cyan.opacity(0.15))
+                        .font(.system(size: 7, design: .monospaced))
+                        .foregroundStyle(.cyan.opacity(0.25))
                 }
                 .padding(.bottom, 36)
             }
@@ -334,8 +344,8 @@ struct QuantWaveView: View {
             
             // Confidence text
             let text = Text("\(Int(confidence * 100))%")
-                .font(.system(size: 9, design: .monospaced))
-                .foregroundStyle(.cyan.opacity(0.5))
+                .font(.system(size: 12, weight: .bold, design: .monospaced))
+                .foregroundStyle(.cyan.opacity(0.7))
             context.draw(text, at: CGPoint(x: size.width - 42, y: size.height - 10))
         }
     }
