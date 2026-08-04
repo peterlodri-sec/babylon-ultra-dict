@@ -15,13 +15,23 @@ struct BabilonApp: App {
     }
 }
 
-// MARLEY — The target animal. The protector shepherd.
-// Babilon is built for Marley. Front-facing camera. Live voice translation.
+// MARLEY — The primary target. The protector shepherd.
+// Babilon is built for Marley and his pack.
 // OM MANI PADME HUNG seed. {-1,0,+1} ternary.
 //
-// Marley's family pack:
+// Pack:
 //   Fathers: Peti, Nate, Kristof
 //   Mothers: Brigi, Bence, Jozsef, Katalin, Alexandra
+//
+// Quant dog detection: each dog has a unique 16-dim ternary signature.
+// Camera → face detect → ternarity match → auth + name.
+
+struct QuantDogProfile: Equatable {
+    let name: String
+    let breed: String
+    let role: String
+    let ternarity: [Float]  // 16-dim {-1,0,+1} signature
+}
 
 @Observable
 class MarleyTranslator {
@@ -32,11 +42,24 @@ class MarleyTranslator {
     var confidence: Float = 0.0
     var ternarityMatrix: [[Float]] = []
     
-    // Marley's breed-specific ternarity profile
-    static let marleyMatrix: [Float] = [
-        // Shepherd: protective, alert, loyal, calm-dominant
-        1, 0, -1, 1, 0, -1, 1, 0, -1, 1, 0, -1, 1, 0, -1, 1
+    // Quant dog auth — currently detected dog
+    var detectedDog: QuantDogProfile?
+    var dogAuthScore: Float = 0.0
+    
+    // Known dogs in Marley's pack — each with unique ternary signature
+    static let dogRegistry: [QuantDogProfile] = [
+        QuantDogProfile(name: "Marley", breed: "Német juhász", role: "Őrző · Protector",
+                         ternarity: [1,0,-1, 1,0,-1, 1,0,-1, 1,0,-1, 1,0,-1, 1]),
+        QuantDogProfile(name: "Bodza", breed: "Vizsla", role: "Vadász · Hunter",
+                         ternarity: [0,1,0, -1,1,0, 0,1,-1, 0,1,0, -1,1,0, 0,1]),
+        QuantDogProfile(name: "Morzsa", breed: "Keverék", role: "Őrszem · Watcher",
+                         ternarity: [0,0,1, 0,-1,1, 1,0,0, 0,0,1, 0,-1,1, 1,0]),
+        QuantDogProfile(name: "Zokni", breed: "Tacskó", role: "Riadó · Alarm",
+                         ternarity: [1,1,-1, 0,0,0, 1,1,-1, 0,0,0, 1,1,-1, 0,0]),
     ]
+    
+    // Marley's breed-specific ternarity profile (default)
+    static let marleyMatrix: [Float] = dogRegistry[0].ternarity
     
     // Marley's pack — the humans he protects and loves
     static let fathers = ["Peti", "Nate", "Kristof"]
@@ -92,6 +115,20 @@ class MarleyTranslator {
     
     func startListening() { isListening = true }
     func stopListening() { isListening = false }
+    
+    // Quant dog auth — match camera observation to known dog ternary signatures
+    func authenticateDog(observedTernarity: [Float]) -> (dog: QuantDogProfile?, score: Float) {
+        guard observedTernarity.count >= 16 else { return (nil, 0) }
+        var best: (dog: QuantDogProfile?, score: Float) = (nil, 0)
+        for profile in Self.dogRegistry {
+            let correlation = zip(observedTernarity, profile.ternarity)
+                .map { $0 * $1 }
+                .reduce(0, +) / Float(profile.ternarity.count)
+            let score = abs(correlation)
+            if score > best.score { best = (profile, score) }
+        }
+        return best.score > 0.25 ? best : (nil, best.score)
+    }
     
     func processAudio(_ buffer: [Float]) {
         guard isListening else { return }

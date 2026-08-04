@@ -12,6 +12,7 @@ struct MarleyView: View {
     @State private var eyeDetected: Bool = false
     @State private var dogEyeSeed: String = ""
     @State private var dynamicSeed = DynamicSeed()
+    @State private var authDog: QuantDogProfile?
     @State private var wavePhases: [Float] = (0..<16).map { _ in Float.random(in: -1...1) }
     
     // Marley's 16-dim ternarity matrix — OM MANI PADME HUNG
@@ -42,11 +43,25 @@ struct MarleyView: View {
             
             VStack {
                 Spacer()
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("CUKI KUTYA")
-                        .font(.system(size: 42, weight: .black, design: .monospaced))
-                        .foregroundStyle(.white)
-                        .shadow(color: .black.opacity(0.8), radius: 8)
+                VStack(alignment: .leading, spacing: 4) {
+                    // Detected dog — quant auth
+                    if let dog = authDog {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(dog.name.uppercased())
+                                .font(.system(size: 52, weight: .black, design: .monospaced))
+                                .foregroundStyle(.cyan)
+                                .shadow(color: .cyan.opacity(0.4), radius: 12)
+                            Text("\(dog.breed) · \(dog.role)")
+                                .font(.system(size: 16, weight: .medium, design: .monospaced))
+                                .foregroundStyle(.cyan.opacity(0.5))
+                        }
+                        .padding(.bottom, 8)
+                    } else {
+                        Text("CUKI KUTYA")
+                            .font(.system(size: 42, weight: .black, design: .monospaced))
+                            .foregroundStyle(.white)
+                            .shadow(color: .black.opacity(0.8), radius: 8)
+                    }
                     if dogDetected {
                         HStack(spacing: 8) {
                             Circle().fill(Color.green).frame(width: 12, height: 12)
@@ -122,6 +137,21 @@ struct MarleyView: View {
             translator.startListening()
             startContinuousTranslation()
             startWaveAnimation()
+            authenticateDogOnStartup()
+        }
+    }
+    
+    // Quant dog auth at startup — match observation to registry
+    func authenticateDogOnStartup() {
+        Task { @MainActor in
+            try? await Task.sleep(nanoseconds: 3_000_000_000)
+            // Simulate dog observation — use current ternarity + random jitter
+            let observed = marleyTernary.enumerated().map { i, v in
+                v + Float.random(in: -0.3...0.3)
+            }
+            let (dog, score) = translator.authenticateDog(observedTernarity: observed)
+            authDog = dog
+            translator.dogAuthScore = score
         }
     }
     
@@ -146,10 +176,12 @@ struct MarleyView: View {
                 }
                 
                 let combinedSeed = dynamicSeed.seed + dogEyeSeed
+                let dogName = authDog?.name ?? "Marley"
                 let translation = makeQuantTranslation(
                     sound: translator.detectedSound,
                     meaning: translator.translation,
-                    seed: combinedSeed
+                    seed: combinedSeed,
+                    dog: dogName
                 )
                 translator.translation = translation
                 showTranslation = true
@@ -164,7 +196,7 @@ struct MarleyView: View {
     }
     
     // Quant transformation: raw sound + seed → baby-babble dog speech
-    func makeQuantTranslation(sound: String, meaning: String, seed: String) -> String {
+    func makeQuantTranslation(sound: String, meaning: String, seed: String, dog: String = "Marley") -> String {
         var prng = Xoshiro128StarStar(seedString: seed + sound + meaning)
         
         let words = meaning.components(separatedBy: CharacterSet.whitespacesAndNewlines.union(.punctuationCharacters))
