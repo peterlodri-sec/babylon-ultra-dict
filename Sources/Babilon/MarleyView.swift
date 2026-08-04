@@ -14,6 +14,7 @@ struct MarleyView: View {
     @State private var dynamicSeed = DynamicSeed()
     @State private var authDog: QuantDogProfile?
     @State private var wavePhases: [Float] = (0..<16).map { _ in Float.random(in: -1...1) }
+    @State private var calmWavePhase: Double = 0
     
     // Marley's 16-dim ternarity matrix — OM MANI PADME HUNG
     let marleyTernary: [Float] = [1, 0, -1, 1, 0, -1, 1, 0, -1, 1, 0, -1, 1, 0, -1, 1]
@@ -22,6 +23,13 @@ struct MarleyView: View {
         ZStack {
             CameraPreview(session: $session)
             Rectangle().fill(.black.opacity(0.55))
+            
+            // Calming waves → toward dog (appears in calm states)
+            if translator.translation.contains("Nyugalom") || translator.translation.contains("Jelenlét") || translator.detectedSound.contains("Lélegzet") || translator.detectedSound.contains("Csendes") {
+                CalmWavesView(phase: calmWavePhase)
+                    .allowsHitTesting(false)
+            }
+            
             SelfieMirror(session: $session)
             
             // Waveform — top right 256×256
@@ -326,6 +334,9 @@ struct MarleyView: View {
                         sin(Float(i) * 0.6 + Float.random(in: -0.5...0.5)) * conf * 0.8
                     }
                 }
+                // Calm wave animation
+                let now = DispatchTime.now().uptimeNanoseconds
+                calmWavePhase = Double(now) / 3_000_000_000
             }
         }
     }
@@ -421,6 +432,46 @@ struct SelfieMirror: NSViewRepresentable {
             p.autoresizingMask = [.layerWidthSizable, .layerHeightSizable]
             p.setAffineTransform(CGAffineTransform(scaleX: -1, y: 1))
             nsView.layer?.addSublayer(p)
+        }
+    }
+}
+
+// Calming waves — radiating toward the dog in calm states
+struct CalmWavesView: View {
+    let phase: Double
+    
+    var body: some View {
+        TimelineView(.animation) { timeline in
+            Canvas { context, size in
+                let center = CGPoint(x: size.width * 0.82, y: size.height * 0.25)
+                let maxRadius = size.width * 0.7
+                
+                for i in 0..<5 {
+                    let radius = (phase.truncatingRemainder(dividingBy: 1.0) + Double(i) * 0.2)
+                        .truncatingRemainder(dividingBy: 1.0) * maxRadius
+                    let opacity = 0.15 - (radius / maxRadius) * 0.12
+                    let path = Path(ellipseIn: CGRect(
+                        x: center.x - radius,
+                        y: center.y - radius * 0.3,
+                        width: radius * 2,
+                        height: radius * 0.6
+                    ))
+                    context.stroke(path, with: .color(.cyan.opacity(opacity)), lineWidth: 1.5)
+                }
+                
+                // Gentle sine wave lines
+                for i in 0..<6 {
+                    let offset = phase * 60 + Double(i) * 30
+                    let path = Path { p in
+                        p.move(to: CGPoint(x: 0, y: center.y + sin(offset * 0.05) * 20))
+                        for x in stride(from: 0, through: size.width, by: 2) {
+                            let y = center.y + sin((x + offset) * 0.02) * 15 + sin((x * 0.7 + offset) * 0.03) * 8
+                            p.addLine(to: CGPoint(x: x, y: y))
+                        }
+                    }
+                    context.stroke(path, with: .color(.cyan.opacity(0.06 - Double(i) * 0.008)), lineWidth: 1)
+                }
+            }
         }
     }
 }
