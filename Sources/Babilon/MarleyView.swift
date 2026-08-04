@@ -95,19 +95,22 @@ struct MarleyView: View {
                     .padding(.bottom, 20)
                 }
                 
-                // BABYLON-ultra-dict footer
+                // BABYLON-ultra-dict footer — Marley's pack
                 VStack(spacing: 2) {
+                    Text("falka · \(MarleyTranslator.fathers.joined(separator: ", ")) · \(MarleyTranslator.mothers.joined(separator: ", "))")
+                        .font(.system(size: 5, design: .monospaced))
+                        .foregroundStyle(.cyan.opacity(0.15))
                     Text("BABYLON-ultra-dict")
-                        .font(.system(size: 9, design: .monospaced))
-                        .foregroundStyle(.cyan.opacity(0.5))
+                        .font(.system(size: 7, design: .monospaced))
+                        .foregroundStyle(.cyan.opacity(0.3))
                         .lineLimit(1)
                     Text(dynamicSeed.seed)
-                        .font(.system(size: 7, design: .monospaced))
-                        .foregroundStyle(.cyan.opacity(0.35))
+                        .font(.system(size: 6, design: .monospaced))
+                        .foregroundStyle(.cyan.opacity(0.2))
                         .lineLimit(1)
                     Text("🎵 \(dynamicSeed.track)")
-                        .font(.system(size: 7, design: .monospaced))
-                        .foregroundStyle(.cyan.opacity(0.25))
+                        .font(.system(size: 6, design: .monospaced))
+                        .foregroundStyle(.cyan.opacity(0.15))
                 }
                 .padding(.bottom, 36)
             }

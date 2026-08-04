@@ -18,6 +18,10 @@ struct BabilonApp: App {
 // MARLEY — The target animal. The protector shepherd.
 // Babilon is built for Marley. Front-facing camera. Live voice translation.
 // OM MANI PADME HUNG seed. {-1,0,+1} ternary.
+//
+// Marley's family pack:
+//   Fathers: Peti, Nate, Kristof
+//   Mothers: Brigi, Bence, Jozsef, Katalin, Alexandra
 
 @Observable
 class MarleyTranslator {
@@ -34,8 +38,13 @@ class MarleyTranslator {
         1, 0, -1, 1, 0, -1, 1, 0, -1, 1, 0, -1, 1, 0, -1, 1
     ]
     
+    // Marley's pack — the humans he protects and loves
+    static let fathers = ["Peti", "Nate", "Kristof"]
+    static let mothers = ["Brigi", "Bence", "Jozsef", "Katalin", "Alexandra"]
+    static var pack: [String] { fathers + mothers }
+    
     // BABYLON-ultra-dict — bilingual Hungarian+English lexicon
-    // 8 phrases per sound type, 40 total
+    // 48 phrases, family-aware
     static let lexicon: [(sound: String, hu: String, en: String)] = [
         ("Vakkantás — Riadó",    "Valaki jön. Figyelek. Biztonságban vagy.", "Someone comes. I watch. You are safe."),
         ("Vakkantás — Riadó",    "Idegen a kapunál. Mögém. Védlek.", "Stranger at the gate. Behind me. I guard."),
@@ -45,6 +54,8 @@ class MarleyTranslator {
         ("Vakkantás — Riadó",    "Ismeretlen szag. Nem a falka. Riadó.", "Unknown scent. Not pack. Alert."),
         ("Vakkantás — Riadó",    "Postás. Minden nap. Győzök.", "Mailman. Every day. I win."),
         ("Vakkantás — Riadó",    "Hallom a lépteit. Közeledik. Készülj.", "I hear steps. Approaching. Prepare."),
+        ("Vakkantás — Riadó",    "Hazaért! Falka! Falka! Boldog vagyok.", "He is home! Pack! Pack! I am happy."),
+        ("Vakkantás — Riadó",    "Apu hazaért. Hallom a kocsiját. Rohanok.", "Dad is home. I hear his car. I run."),
         ("Morgás — Éberség",     "Hallok valamit. Maradj közel. Vigyázok.", "I hear something. Stay close. I guard."),
         ("Morgás — Éberség",     "Neszez a messzi. Megjegyzem. Aludj.", "A rustle far. I note it. Sleep on."),
         ("Morgás — Éberség",     "Az éj beszél. Csenddel felelek.", "The night speaks. I answer silent."),
@@ -90,7 +101,6 @@ class MarleyTranslator {
         
         confidence = min(abs(sum) / Float(buffer.count) * 2, 1.0)
         
-        // Filter matching phrases by sound type
         let soundKey: String
         switch true {
         case sum > 0.5:  soundKey = "Vakkantás"
@@ -101,7 +111,18 @@ class MarleyTranslator {
         }
         
         let matches = Self.lexicon.filter { $0.sound.contains(soundKey) }
-        if let picked = matches.randomElement() {
+        if var picked = matches.randomElement() {
+            // Occasionally personalize with family names
+            if Int.random(in: 0...3) == 0 {
+                let who: String
+                if soundKey == "Csendes figyelem" || soundKey == "Lélegzet" {
+                    who = Self.mothers.randomElement()!
+                } else {
+                    who = Self.fathers.randomElement()!
+                }
+                picked.hu = "\(who). \(picked.hu)"
+                picked.en = "\(who). \(picked.en)"
+            }
             detectedSound = picked.sound
             translation = picked.hu
             translationEN = picked.en
