@@ -100,7 +100,7 @@ struct MarleyView: View {
                             if translator.isScared {
                                 Circle().fill(Color.purple).frame(width: 10, height: 10)
                                     .shadow(color: .purple.opacity(0.8), radius: 6)
-                                Text("fél · lassú mód")
+                                Text(translator.thinkingOverflow ? "túl sok · lassíts" : "fél · lassú mód")
                                     .font(.system(size: 14, weight: .semibold, design: .monospaced))
                                     .foregroundStyle(.purple.opacity(0.7))
                                     .shadow(color: .purple.opacity(0.3), radius: 3)
@@ -332,6 +332,14 @@ struct MarleyView: View {
                 thinkingProgress = 0
                 let steps = scared ? 24 : 12
                 let stepInc = 1.0 / Double(steps)
+                
+                // Overflow detection — if thinking too fast, slow down
+                if scared && translator.thinkingOverflow {
+                    humanOverflowCalm()
+                    try? await Task.sleep(nanoseconds: 3_000_000_000)
+                    translator.thinkingOverflow = false
+                }
+                
                 for _ in 0..<steps {
                     try? await Task.sleep(nanoseconds: 42_000_000)
                     thinkingProgress += stepInc
@@ -420,7 +428,16 @@ struct MarleyView: View {
     }
     
     // Bilingual TTS — alternates EN+HU per cycle
-    // Scared dog TTS — slow, soft, gentle
+    // Overflow calm — when dog thinking too fast
+    func humanOverflowCalm() {
+        let utterance = AVSpeechUtterance(string: "Nyugi baba. Lassabban. Minden oké.")
+        utterance.voice = AVSpeechSynthesisVoice(language: "hu-HU")
+        utterance.rate = 0.28
+        utterance.pitchMultiplier = 0.7
+        utterance.volume = 0.6
+        BabilonApp.speech.speak(utterance)
+    }
+    
     func speakCalm(_ text: String, seed: String = "OM MANI PADME HUNG") {
         guard !text.isEmpty else { return }
         let utterance = AVSpeechUtterance(string: text)

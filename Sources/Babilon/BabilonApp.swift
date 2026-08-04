@@ -42,6 +42,7 @@ class MarleyTranslator {
     var humanResponse: String = ""
     var isScared: Bool = false
     var periodicWhisper: String = ""
+    var thinkingOverflow: Bool = false
     var confidence: Float = 0.0
     var ternarityMatrix: [[Float]] = []
     
@@ -225,6 +226,7 @@ class MarleyTranslator {
             
             // Track fear state
             isScared = (soundKey == "Nyüszítés")
+            thinkingOverflow = isScared && Float.random(in: 0...1) > 0.6
             
             // Human response — bidirectional conversation
             humanResponse = ""
