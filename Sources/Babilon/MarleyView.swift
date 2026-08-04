@@ -24,11 +24,10 @@ struct MarleyView: View {
             CameraPreview(session: $session)
             Rectangle().fill(.black.opacity(0.55))
             
-            // Calming waves → toward dog (appears in calm states)
-            if translator.translation.contains("Nyugalom") || translator.translation.contains("Jelenlét") || translator.detectedSound.contains("Lélegzet") || translator.detectedSound.contains("Csendes") {
-                CalmWavesView(phase: calmWavePhase)
-                    .allowsHitTesting(false)
-            }
+            // CONSTANT HUG WAVE — smooth as a breeze, always on
+            // Peter loves Marley. This wave never stops.
+            HugWaveView(phase: calmWavePhase)
+                .allowsHitTesting(false)
             
             SelfieMirror(session: $session)
             
@@ -453,41 +452,49 @@ struct SelfieMirror: NSViewRepresentable {
     }
 }
 
-// Calming waves — radiating toward the dog in calm states
-struct CalmWavesView: View {
+// Hug Wave — constant, smooth as a breeze, Peter loves Marley
+struct HugWaveView: View {
     let phase: Double
     
     var body: some View {
         TimelineView(.animation) { timeline in
             Canvas { context, size in
                 let center = CGPoint(x: size.width * 0.82, y: size.height * 0.25)
-                let maxRadius = size.width * 0.7
+                let now = timeline.date.timeIntervalSinceReferenceDate
                 
-                for i in 0..<5 {
-                    let radius = (phase.truncatingRemainder(dividingBy: 1.0) + Double(i) * 0.2)
-                        .truncatingRemainder(dividingBy: 1.0) * maxRadius
-                    let opacity = 0.15 - (radius / maxRadius) * 0.12
+                // Gentle radial hug pulses — warm, always expanding
+                for i in 0..<3 {
+                    let r = ((phase + Double(i) * 0.33).truncatingRemainder(dividingBy: 1.0)) * size.width * 0.45
+                    let alpha = 0.06 - (r / (size.width * 0.5)) * 0.04
                     let path = Path(ellipseIn: CGRect(
-                        x: center.x - radius,
-                        y: center.y - radius * 0.3,
-                        width: radius * 2,
-                        height: radius * 0.6
+                        x: center.x - r,
+                        y: center.y - r * 0.25,
+                        width: r * 2,
+                        height: r * 0.5
                     ))
-                    context.stroke(path, with: .color(.cyan.opacity(opacity)), lineWidth: 1.5)
+                    context.stroke(path, with: .color(.cyan.opacity(alpha)), lineWidth: 1)
                 }
                 
-                // Gentle sine wave lines
-                for i in 0..<6 {
-                    let offset = phase * 60 + Double(i) * 30
+                // Smooth sine wave — like a heartbeat, like a hug
+                for i in 0..<4 {
+                    let yOff = sin(now * 0.4 + Double(i) * 1.2) * 30 + sin(now * 0.7 + Double(i)) * 15
                     let path = Path { p in
-                        p.move(to: CGPoint(x: 0, y: center.y + sin(offset * 0.05) * 20))
-                        for x in stride(from: 0, through: size.width, by: 2) {
-                            let y = center.y + sin((x + offset) * 0.02) * 15 + sin((x * 0.7 + offset) * 0.03) * 8
+                        p.move(to: CGPoint(x: 0, y: center.y + yOff))
+                        for x in stride(from: 0, through: size.width, by: 3) {
+                            let y = center.y + yOff + sin((x * 0.015 + now * 0.5)) * 12 + sin((x * 0.03 + now * 0.3)) * 6
                             p.addLine(to: CGPoint(x: x, y: y))
                         }
                     }
-                    context.stroke(path, with: .color(.cyan.opacity(0.06 - Double(i) * 0.008)), lineWidth: 1)
+                    context.stroke(path, with: .color(.cyan.opacity(0.04 + Double(i) * 0.005)), lineWidth: 1)
                 }
+                
+                // Warm glow center — the hug origin
+                let glowR: CGFloat = 40 + sin(now * 0.6) * 10
+                let glow = Path(ellipseIn: CGRect(
+                    x: center.x - glowR, y: center.y - glowR * 0.3,
+                    width: glowR * 2, height: glowR * 0.6
+                ))
+                context.fill(glow, with: .color(.cyan.opacity(0.03)))
             }
         }
     }
