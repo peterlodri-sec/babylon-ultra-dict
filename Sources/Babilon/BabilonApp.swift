@@ -1,10 +1,22 @@
 import SwiftUI
 import AVFoundation
+import AppKit
 
 @main
 struct BabilonApp: App {
     static let speech = AVSpeechSynthesizer()
     @State private var translator = MarleyTranslator()
+    
+    init() {
+        // Ensure only one BABYLON instance runs
+        let runningApps = NSWorkspace.shared.runningApplications
+        let babylonApps = runningApps.filter {
+            $0.bundleIdentifier == "dev.vaked.babylon-ultra-dict" && $0.processIdentifier != ProcessInfo.processInfo.processIdentifier
+        }
+        for app in babylonApps {
+            app.terminate()
+        }
+    }
     
     var body: some Scene {
         WindowGroup {
