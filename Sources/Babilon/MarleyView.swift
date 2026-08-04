@@ -162,6 +162,11 @@ struct MarleyView: View {
                 
                 // BABYLON-ultra-dict footer — Marley's pack
                 VStack(spacing: 2) {
+                    // SEMMI BAJ SOHA — 1Hz constant reassurance
+                    Text("SEMMI BAJ SOHA")
+                        .font(.system(size: 9, weight: .bold, design: .monospaced))
+                        .foregroundStyle(.cyan.opacity(0.25))
+                        .shadow(color: .cyan.opacity(0.1), radius: 4)
                     Text("falka · \(MarleyTranslator.fathers.joined(separator: ", ")) · \(MarleyTranslator.mothers.joined(separator: ", "))")
                         .font(.system(size: 5, design: .monospaced))
                         .foregroundStyle(.cyan.opacity(0.15))
@@ -334,6 +339,17 @@ struct MarleyView: View {
             utt2.volume = 0.7
             BabilonApp.speech.speak(utt2)
         }
+    }
+    
+    // Human voice — warmer, clearer
+    func speakHumanResponse(_ text: String) {
+        guard !text.isEmpty else { return }
+        let utterance = AVSpeechUtterance(string: text)
+        utterance.voice = AVSpeechSynthesisVoice(language: "hu-HU")
+        utterance.rate = 0.42
+        utterance.pitchMultiplier = 0.95
+        utterance.volume = 0.9
+        BabilonApp.speech.speak(utterance)
     }
     
     func startCamera() {
@@ -536,6 +552,22 @@ struct HugWaveView: View {
                     width: glowR * 2, height: glowR * 0.6
                 ))
                 context.fill(glow, with: .color(.cyan.opacity(0.03)))
+                
+                // SEMMI BAJ SOHA — 1Hz pulse, constant reassurance
+                let hz = sin(now * .pi * 2) * 0.5 + 0.5  // 1Hz sine 0→1
+                let semmi = Path(ellipseIn: CGRect(
+                    x: center.x - 60 - hz * 20, y: center.y - 18 - hz * 8,
+                    width: 120 + hz * 40, height: 36 + hz * 16
+                ))
+                context.stroke(semmi, with: .color(.cyan.opacity(0.04 + hz * 0.04)), lineWidth: 1)
+                
+                // Pulse dot at 1Hz
+                let dotR: CGFloat = 3 + hz * 2
+                let dot = Path(ellipseIn: CGRect(
+                    x: center.x - dotR, y: center.y - dotR,
+                    width: dotR * 2, height: dotR * 2
+                ))
+                context.fill(dot, with: .color(.cyan.opacity(0.08 + hz * 0.12)))
             }
         }
     }
