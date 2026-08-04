@@ -12,6 +12,7 @@ struct MarleyView: View {
     @State private var eyeDetected: Bool = false
     @State private var dogEyeSeed: String = ""
     @State private var dynamicSeed = DynamicSeed()
+    @State private var wavePhases: [Float] = (0..<16).map { _ in Float.random(in: -1...1) }
     
     // Marley's 16-dim ternarity matrix — OM MANI PADME HUNG
     let marleyTernary: [Float] = [1, 0, -1, 1, 0, -1, 1, 0, -1, 1, 0, -1, 1, 0, -1, 1]
@@ -21,6 +22,23 @@ struct MarleyView: View {
             CameraPreview(session: $session)
             Rectangle().fill(.black.opacity(0.55))
             SelfieMirror(session: $session)
+            
+            // Waveform — top right 256×256
+            VStack {
+                HStack {
+                    Spacer()
+                    QuantWaveView(phases: wavePhases, confidence: translator.confidence)
+                        .frame(width: 256, height: 256)
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 16)
+                                .stroke(.cyan.opacity(0.3), lineWidth: 1)
+                        )
+                }
+                .padding(.leading, 24)
+                .padding(.trailing, 16)
+                .padding(.top, 16)
+            }
             
             VStack {
                 Spacer()
@@ -90,6 +108,7 @@ struct MarleyView: View {
             translator.isListening = true
             translator.startListening()
             startContinuousTranslation()
+            startWaveAnimation()
         }
     }
     
@@ -241,6 +260,83 @@ struct MarleyView: View {
                     translator.isListening = true; translator.startListening()
                 }
             }
+        }
+    }
+    
+    // Live waveform animation — ternary bars driven by translator
+    func startWaveAnimation() {
+        Task { @MainActor in
+            while true {
+                try? await Task.sleep(nanoseconds: 100_000_000)
+                let tern = translator.ternarityMatrix.flatMap { $0 }
+                let conf = translator.confidence
+                wavePhases = tern.enumerated().map { i, t in
+                    let base = Float(t) * conf
+                    let jitter = Float.random(in: -0.2...0.2)
+                    let wave = sin(Float(i) * 0.7 + Float(DispatchTime.now().uptimeNanoseconds) / 800_000_000)
+                    return base + jitter + wave * 0.15
+                }
+                if tern.isEmpty {
+                    wavePhases = (0..<16).map { i in
+                        sin(Float(i) * 0.6 + Float.random(in: -0.5...0.5)) * conf * 0.8
+                    }
+                }
+            }
+        }
+    }
+}
+
+// BABYLON-ultra-dict — 16-bar ternary waveform
+struct QuantWaveView: View {
+    let phases: [Float]
+    let confidence: Float
+    
+    var body: some View {
+        Canvas { context, size in
+            let barW = size.width / CGFloat(phases.count)
+            let midY = size.height / 2
+            let maxH = size.height * 0.45
+            
+            // Glow background
+            context.fill(
+                Path(ellipseIn: CGRect(x: size.width * 0.1, y: midY - 4, width: size.width * 0.8, height: 8)),
+                with: .color(.cyan.opacity(0.08))
+            )
+            
+            for (i, phase) in phases.enumerated() {
+                let height = CGFloat(abs(phase)) * maxH
+                let x = CGFloat(i) * barW + barW * 0.15
+                let y = midY - height
+                let rect = CGRect(x: x, y: y, width: barW * 0.7, height: height * 2)
+                
+                // Ternarity color: +1=green, 0=cyan, -1=red
+                let color: Color = phase > 0.1 ? .green.opacity(0.7) :
+                                    phase < -0.1 ? .orange.opacity(0.7) :
+                                    .cyan.opacity(0.5)
+                
+                let bar = Path(roundedRect: rect, cornerRadius: 2)
+                context.fill(bar, with: .color(color))
+                
+                // Glow bar
+                if abs(phase) > 0.3 {
+                    let glowRect = CGRect(x: x, y: y - 2, width: barW * 0.7, height: height * 2 + 4)
+                    let glow = Path(roundedRect: glowRect, cornerRadius: 2)
+                    context.fill(glow, with: .color(color.opacity(0.3)))
+                }
+            }
+            
+            // Confidence ring
+            let ringRadius: CGFloat = 12
+            let ringRect = CGRect(x: size.width - 30, y: 10, width: ringRadius * 2, height: ringRadius * 2)
+            let ringPath = Path(ellipseIn: ringRect)
+            context.stroke(ringPath, with: .color(.cyan.opacity(0.5)), lineWidth: 2)
+            context.fill(Path(ellipseIn: ringRect.insetBy(dx: 4, dy: 4)), with: .color(.green.opacity(Double(confidence))))
+            
+            // Confidence text
+            let text = Text("\(Int(confidence * 100))%")
+                .font(.system(size: 9, design: .monospaced))
+                .foregroundStyle(.cyan.opacity(0.5))
+            context.draw(text, at: CGPoint(x: size.width - 42, y: size.height - 10))
         }
     }
 }
