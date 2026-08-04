@@ -192,8 +192,14 @@ class MarleyTranslator {
             // Human response — bidirectional conversation
             humanResponse = ""
             if isScared {
-                // Dog is scared — father soothes
-                humanResponse = "Minden oké szerelmem. Különleges kutyus vagy. Mindennél jobban szeret apa."
+                // Dog is scared — father soothes, deep love
+                let scaredPhrases = [
+                    "Minden oké szerelmem. Különleges kutyus vagy. Mindennél jobban szeret apa.",
+                    "Apa érez téged manóka. Marley. Cuki kutya. Itt vagyok.",
+                    "Nyugi kicsim. Apa vigyáz rád. Semmi baj. Soha.",
+                    "Gyere ide manóka. Apa megvéd. Szeretlek.",
+                ]
+                humanResponse = scaredPhrases.randomElement()!
             }
             if soundKey == "Csendes figyelem" || soundKey == "Lélegzet" {
                 // Dog is calm/sleepy → human responds
