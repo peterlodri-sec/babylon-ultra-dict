@@ -46,44 +46,44 @@ class MarleyTranslator {
         
         switch true {
         case sum > 0.5:
-            detectedSound = "Woof — Alert"
+            detectedSound = "Vakkantás — Riadó"
             translation = [
-                "Someone is here. I am watching. You are safe.",
-                "Intruder at the door. Behind me. I guard.",
-                "I see them. I am the wall. No one passes.",
-                "Ears up. Eyes fixed. I am ready. You rest.",
+                "Valaki jön. Én figyelek. Te biztonságban vagy.",
+                "Idegen a kapunál. Mögém bújj. Én védelek.",
+                "Látom őket. Én vagyok a fal. Senki nem jut át.",
+                "Fülem égnek. Szemem a célon. Készen állok. Te pihenj.",
             ].randomElement()!
         case sum > 0.1:
-            detectedSound = "Low growl — Vigilance"
+            detectedSound = "Mély morgás — Éberség"
             translation = [
-                "I hear something. Stay close. I protect.",
-                "A sound. Far. I mark it. You keep sleeping.",
-                "The night is speaking. I answer with silence.",
-                "Perimeter check. All nodes. I report: alert.",
+                "Hallok valamit. Maradj közel. Én vigyázok rád.",
+                "Egy neszez a messzi. Megjegyzem. Aludj tovább.",
+                "Az éj beszél. Én csenddel felelek neki.",
+                "Körbejártam. Minden rendben. Jelentem: tiszta.",
             ].randomElement()!
         case sum > -0.1:
-            detectedSound = "Soft breath — Calm"
+            detectedSound = "Halk lélegzet — Nyugalom"
             translation = [
-                "All is well. The perimeter is clear. Rest.",
-                "Wind in the yard. Birds in the tree. Peace.",
-                "Your heart is slow. My heart matches. We rest.",
-                "Safe zone. Zero threats. Infinite calm. Breathe.",
+                "Minden rendben. A ház csendes. Pihenjünk.",
+                "Szél az udvarban. Madár a fán. Béke van.",
+                "A szíved lassú. Az enyém ráhangolódik. Pihenünk.",
+                "Biztos zóna. Nulla veszély. Végtelen nyugalom. Lélegezz.",
             ].randomElement()!
         case sum > -0.5:
-            detectedSound = "Whine — Concern"
+            detectedSound = "Nyüszítés — Aggodalom"
             translation = [
-                "Something feels wrong. Check the door. The aperture.",
-                "I am uneasy. The air changed. Check the back gate.",
-                "A shadow moved. Not wind. Not bird. Not human. Check.",
-                "My stomach says worry. My nose says nothing. I whine.",
+                "Valami nincs rendben. Nézz az ajtóra. A résre is.",
+                "Nyugtalan vagyok. A levegő megváltozott. Nézz a hátsó kapura.",
+                "Egy árnyék mozdult. Nem szél. Nem madár. Nem ember. Nézd meg.",
+                "A gyomrom azt mondja: baj. Az orrom semmit. Nyüszítek.",
             ].randomElement()!
         default:
-            detectedSound = "Silent watch — Presence"
+            detectedSound = "Csendes figyelem — Jelenlét"
             translation = [
-                "I am here. You are here. This is enough.",
-                "No words needed. My head on your knee. Forever.",
-                "The sun moved. I followed it. The patch is warm now.",
-                "You breathe. I breathe. The house breathes. All one.",
+                "Itt vagyok. Itt vagy. Ez elég.",
+                "Nem kell szó. A fejem az öledben. Örökké.",
+                "A nap elmozdult. Követtem. A folt most meleg.",
+                "Te lélegzel. Én lélegzem. A ház lélegzik. Egyek vagyunk.",
             ].randomElement()!
         }
         

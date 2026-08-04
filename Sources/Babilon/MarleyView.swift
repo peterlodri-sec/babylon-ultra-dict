@@ -129,17 +129,17 @@ struct MarleyView: View {
         let words = meaning.components(separatedBy: CharacterSet.whitespacesAndNewlines.union(.punctuationCharacters))
             .filter { !$0.isEmpty && $0.count > 1 }
         
-        // Sound-specific babble + multi-interjection
+        // Sound-specific babble — Hungarian dog sounds
         let sl = sound.lowercased()
         let babblePool: [String]
-        if sl.contains("woof") { babblePool = ["brrr", "grrr", "woof", "awoo"] }
-        else if sl.contains("whine") { babblePool = ["nnng", "wah", "mmm", "baba"] }
-        else if sl.contains("growl") { babblePool = ["grrr", "gah", "gaga", "brrr"] }
-        else if sl.contains("breath") || sl.contains("calm") { babblePool = ["mmm", "ooo", "baba", "goo"] }
-        else { babblePool = ["gaga", "goo", "wah", "mmm", "baba"] }
+        if sl.contains("vakkant") || sl.contains("woof") { babblePool = ["brrr", "grrr", "vau", "awoo"] }
+        else if sl.contains("nyüsz") || sl.contains("whine") { babblePool = ["nnng", "nyih", "mmm", "baba"] }
+        else if sl.contains("morg") || sl.contains("growl") { babblePool = ["grrr", "gah", "vauu", "brrr"] }
+        else if sl.contains("lélegz") || sl.contains("nyugal") { babblePool = ["mmm", "óóó", "baba", "szu"] }
+        else { babblePool = ["gaga", "szu", "vau", "mmm", "baba"] }
         
-        // Dog feelings — more emotional range
-        let feelings = ["safe", "watch", "quiet", "sleep", "guard", "love", "happy", "alert", "play", "home", "stay", "protect", "food", "warm", "pack", "rest", "good", "now"]
+        // Hungarian emotional end-words
+        let feelings = ["bizti", "figyi", "csend", "szundi", "védlek", "szeret", "boldog", "riadó", "játék", "otthon", "marad", "véd", "kaja", "meleg", "falka", "pihi", "jó", "most"]
         
         let b1 = babblePool[Int(prng.next() * Float(babblePool.count)) % babblePool.count]
         let b2 = babblePool[Int(prng.next() * Float(babblePool.count)) % babblePool.count]
@@ -159,14 +159,14 @@ struct MarleyView: View {
         return "\(b1)… \(mid) …\(feeling)."
     }
     
-    // Random baby coo/babble before TTS
+    // Random baby coo/babble — Hungarian dog sounds
     func playBabySound() {
-        let babble = ["goo", "gah", "baba", "mama", "brrr", "wah", "mmm", "ooo"]
+        let babble = ["vau", "nyih", "brr", "mmm", "hau", "szű", "óó", "gá"]
         let picked = babble.randomElement()!
         let utterance = AVSpeechUtterance(string: picked)
-        utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
-        utterance.rate = 0.25
-        utterance.pitchMultiplier = 1.3
+        utterance.voice = AVSpeechSynthesisVoice(language: "hu-HU")
+        utterance.rate = 0.22
+        utterance.pitchMultiplier = 1.35
         utterance.volume = 0.4
         BabilonApp.speech.speak(utterance)
     }
@@ -174,11 +174,11 @@ struct MarleyView: View {
     func speakTranslation(_ text: String, seed: String = "OM MANI PADME HUNG") {
         guard !text.isEmpty else { return }
         let utterance = AVSpeechUtterance(string: text)
-        utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
+        utterance.voice = AVSpeechSynthesisVoice(language: "hu-HU")
         let seedHash = abs(seed.hashValue % 100)
-        utterance.rate = 0.38 + Float(seedHash) / 500.0
-        utterance.pitchMultiplier = 0.8 + Float(seedHash) / 1000.0
-        utterance.volume = 0.8
+        utterance.rate = 0.35 + Float(seedHash) / 500.0
+        utterance.pitchMultiplier = 0.75 + Float(seedHash) / 1000.0
+        utterance.volume = 0.85
         BabilonApp.speech.speak(utterance)
     }
     
