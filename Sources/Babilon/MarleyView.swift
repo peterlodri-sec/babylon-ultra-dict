@@ -62,6 +62,11 @@ struct MarleyView: View {
                             Text("\(dog.breed) · \(dog.role)")
                                 .font(.system(size: 16, weight: .medium, design: .monospaced))
                                 .foregroundStyle(.cyan.opacity(0.5))
+                            // Signal chain
+                            Text(signalChain())
+                                .font(.system(size: 9, design: .monospaced))
+                                .foregroundStyle(.cyan.opacity(0.25))
+                                .padding(.top, 4)
                         }
                         .padding(.bottom, 8)
                     } else {
@@ -69,6 +74,10 @@ struct MarleyView: View {
                             .font(.system(size: 42, weight: .black, design: .monospaced))
                             .foregroundStyle(.white)
                             .shadow(color: .black.opacity(0.8), radius: 8)
+                        Text(signalChain())
+                            .font(.system(size: 9, design: .monospaced))
+                            .foregroundStyle(.cyan.opacity(0.15))
+                            .padding(.top, 4)
                     }
                     if dogDetected {
                         HStack(spacing: 8) {
@@ -153,7 +162,6 @@ struct MarleyView: View {
     func authenticateDogOnStartup() {
         Task { @MainActor in
             try? await Task.sleep(nanoseconds: 3_000_000_000)
-            // Simulate dog observation — use current ternarity + random jitter
             let observed = marleyTernary.enumerated().map { i, v in
                 v + Float.random(in: -0.3...0.3)
             }
@@ -161,6 +169,15 @@ struct MarleyView: View {
             authDog = dog
             translator.dogAuthScore = score
         }
+    }
+    
+    // Human-readable signal chain
+    func signalChain() -> String {
+        let dog = authDog?.name ?? "Marley"
+        let sound = translator.detectedSound.components(separatedBy: " — ").first ?? "figyel"
+        let lang = (abs(dynamicSeed.seed.hashValue) % 2) == 0 ? "hu-HU" : "en-US"
+        let track = dynamicSeed.track.components(separatedBy: " — ").first ?? "ENTHEA"
+        return "🎤 M3 ---mic---> 🐕 \(dog) ---\(sound)---> 🔢 Xoshiro128** ---seed---> 🎵 music.vaked.dev/\(track) ---TTS---> 🔊 \(lang)"
     }
     
     // Always streaming voice — Marley→human with 1-3s delay
