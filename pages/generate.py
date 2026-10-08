@@ -148,6 +148,7 @@ td {{ padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }}
 
 <div class="footer">
     <p>BABYLON-ultra-dict · <a href="https://github.com/peterlodri-sec/babylon-ultra-dict">github.com/peterlodri-sec/babylon-ultra-dict</a></p>
+    <p>The operator's register → <a href="https://keywords.vaked.dev">keywords.vaked.dev</a></p>
     <p>Made in Hungary · PEACE )( LOVE () UNITY &lt;3</p>
     <p>Generated {datetime.now().strftime('%Y-%m-%d %H:%M')} UTC</p>
 </div>
